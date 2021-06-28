@@ -1,0 +1,169 @@
+<html>
+   <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="./app.global.css">
+   <body>
+      <div id="root">
+         <div data-reactroot="">
+            <div class="app-container">
+               <div class="top-container">
+                  <div class="tab-toolbar">
+                     <div>LOGIN7E</div>
+                     <div data-id="SCENARIO" class="active">SCENARIO</div>
+                     <div data-id="ANALYZE" class="">ANALYZE</div>
+                     <div data-id="SEARCH" class="">SEARCH</div>
+                     <div data-id="SETTINGS" class="">SETTINGS</div>
+                  </div>
+                  <div class="menu-toolbar">
+                     <div class="">
+                        <div class="menu-icon tall">
+                           <div data-menuid="copy" class="disabled">
+                              <div><span class="icon tall copy"></span></div>
+                              <div>Copy</div>
+                           </div>
+                           <div data-menuid="paste" class="disabled">
+                              <div><span class="icon tall paste"></span></div>
+                              <div>Paste</div>
+                           </div>
+                           <div data-menuid="delete" class="disabled">
+                              <div><span class="icon tall delete"></span></div>
+                              <div>Delete</div>
+                           </div>
+                        </div>
+                        <div>edit</div>
+                     </div>
+                     <div class="">
+                        <div class="menu-icon tall">
+                           <div data-menuid="new-folder" class="disabled">
+                              <div><span class="icon tall new-folder"></span></div>
+                              <div>Folder</div>
+                           </div>
+                           <div data-menuid="new-tutorial" class="disabled">
+                              <div><span class="icon tall new-tutorial"></span></div>
+                              <div>Tutorial</div>
+                           </div>
+                        </div>
+                        <div>new</div>
+                     </div>
+                     <div class="">
+                        <div class="menu-icon tall">
+                           <div data-menuid="select-all" class="disabled">
+                              <div><span class="icon tall select-all"></span></div>
+                              <div>All</div>
+                           </div>
+                           <div data-menuid="select-reverse" class="disabled">
+                              <div><span class="icon tall select-reverse"></span></div>
+                              <div>Reverse</div>
+                           </div>
+                           <div data-menuid="select-unselect" class="disabled">
+                              <div><span class="icon tall select-unselect"></span></div>
+                              <div>Unselect</div>
+                           </div>
+                        </div>
+                        <div>selection</div>
+                     </div>
+                     <div class="">
+                        <div class="menu-icon small">
+                           <div data-menuid="search-title" class="">
+                              <div><span class="icon small search-title"></span></div>
+                              <div>Title</div>
+                           </div>
+                           <div data-menuid="search-modifier" class="disabled">
+                              <div><span class="icon small search-modifier"></span></div>
+                              <div>Modifier</div>
+                           </div>
+                           <div data-menuid="search-scene" class="disabled">
+                              <div><span class="icon small search-scene"></span></div>
+                              <div>Scene</div>
+                           </div>
+                        </div>
+                        <div>search filter</div>
+                     </div>
+                     <div class="">
+                        <div class="menu-icon tall">
+                           <div data-menuid="apply-service-on" class="disabled">
+                              <div><span class="icon tall apply-service-on"></span></div>
+                              <div>Service-On</div>
+                           </div>
+                           <div data-menuid="apply-service-off" class="disabled">
+                              <div><span class="icon tall apply-service-off"></span></div>
+                              <div>Service-Off</div>
+                           </div>
+                        </div>
+                        <div>service</div>
+                     </div>
+                     <div class="">
+                        <div class="menu-icon tall">
+                           <div data-menuid="mapping-mapping" class="disabled">
+                              <div><span class="icon tall mapping-mapping"></span></div>
+                              <div>mapping</div>
+                           </div>
+                        </div>
+                        <div>mapping</div>
+                     </div>
+                     <div class="">
+                        <div class="menu-icon tall">
+                           <div data-menuid="export-excel" class="disabled">
+                              <div><span class="icon tall export-excel"></span></div>
+                              <div>excel</div>
+                           </div>
+                        </div>
+                        <div>export</div>
+                     </div>
+                  </div>
+               </div>
+               <div class="nav">
+                  <ul class="flex">
+                     <li><span class="icon left-arrow"></span><span class="icon right-arrow"></span></li>
+                     <li class="menu-stack"></li>
+                     <li><input placeholder="search title"></li>
+                     <li class="lan-types">
+                        <select>
+                           <option value="gl-ES" label="Galatia"></option>
+                           <option value="ko-KR" label="한국어"></option>
+                           <option value="en-US" label="English"></option>
+                           <option value="zh-CN" label="??中文"></option>
+                           <option value="zh-TW" label="繁體中文"></option>
+                           <option value="ja-JP" label="日本語"></option>
+                           <option value="vi-VN" label="Vi?t Nam"></option>
+                           <option value="es" label="Espanol"></option>
+                           <option value="id-ID" label="Indonesian"></option>
+                        </select>
+                     </li>
+                  </ul>
+               </div>
+               <div class="tree-container">
+                  <ul class="tree-children level1"></ul>
+               </div>
+               <div class="main-container">
+                  <div class="header">
+                     <div class="title">Title</div>
+                     <div class="updatedate">Last Update</div>
+                     <div class="register">Register</div>
+                     <div class="category">Service</div>
+                     <div class="title-displayed">Displayed Title</div>
+                  </div>
+                  <div class="body"></div>
+               </div>
+               <div class="statusbar-container"><span class="status" style="padding: 4px 10px;"><span>0 items</span><span></span></span><span class="icon display_detail"></span><span class="icon display_list active"></span></div>
+            </div>
+            <div id="spinner" style="display: block;">
+               <div class="react-spinner">
+                  <div class="react-spinner_bar a"></div>
+                  <div class="react-spinner_bar b"></div>
+                  <div class="react-spinner_bar c"></div>
+                  <div class="react-spinner_bar d"></div>
+                  <div class="react-spinner_bar e"></div>
+                  <div class="react-spinner_bar f"></div>
+                  <div class="react-spinner_bar g"></div>
+                  <div class="react-spinner_bar h"></div>
+                  <div class="react-spinner_bar i"></div>
+                  <div class="react-spinner_bar j"></div>
+                  <div class="react-spinner_bar k"></div>
+                  <div class="react-spinner_bar l"></div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>
