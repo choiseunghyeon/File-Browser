@@ -4,18 +4,14 @@ import { getCurrentPath, getNodeById } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 
 interface INavContainerProps {
-    tree: IRenderTree;
     updateChildren: Function;
-    currentNodeId: string;
     changeCurrentNodeId: Function;
+    currentNode: IRenderTree;   
 }
 
 
-export default function NavContainer({tree, currentNodeId, changeCurrentNodeId, updateChildren}: INavContainerProps) {
-    const currentPath = useMemo(() => {
-        const targetNode = getNodeById(tree, currentNodeId);
-        return getCurrentPath(targetNode);
-    }, [tree, currentNodeId]);
+export default function NavContainer({currentNode, changeCurrentNodeId, updateChildren}: INavContainerProps) {
+    const currentPath = useMemo(() => getCurrentPath(currentNode), [currentNode]);
 
     return (
         <div className="nav">

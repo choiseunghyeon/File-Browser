@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MainHeaderContainer from './MainHeaderContainer';
 import { MainBodyContainer } from './MainBodyContainer';
+import { IRenderTree } from '../types/common';
 
 interface IMainContainerProps {
-    currentPath: string[],
+    currentNode: IRenderTree
 } 
 
 export function MainContainer (props: IMainContainerProps) {
