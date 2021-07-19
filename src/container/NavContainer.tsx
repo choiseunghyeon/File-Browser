@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import Path from '../components/Path'
-import { getCurrentPath, getNodeById } from '../lib/treeUtils';
+import { getCurrentPath } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 
 interface INavContainerProps {

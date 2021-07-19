@@ -46,7 +46,7 @@ export default function App() {
             <TopContainer/>
             <NavContainer currentNode={currentNode} updateChildren={updateChildren} changeCurrentNodeId={changeCurrentNodeId} />
             <TreeContainer tree={tree} updateChildren={updateChildren} currentNodeId={currentNodeId} changeCurrentNodeId={changeCurrentNodeId}/>
-            <MainContainer currentNode={currentNode} />
+            <MainContainer currentNode={currentNode} updateChildren={updateChildren} changeCurrentNodeId={changeCurrentNodeId} />
             <StatusbarContainer/>
             {/* <Spinner /> */}
         </div>

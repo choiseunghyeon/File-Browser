@@ -40,3 +40,17 @@ export const getNodeById = (node, id) => {
     currentNode.children?.forEach(node => q.push(node));
   }
 };
+
+export const getNodeByName = (node, name) => {
+  const q = [node];
+
+  while (q.length !== 0) {
+    const currentNode = q.shift();
+    if (typeof currentNode === "undefined") break;
+
+    if (currentNode.name === name) {
+      return currentNode;
+    }
+    currentNode.children?.forEach(node => q.push(node));
+  }
+};
