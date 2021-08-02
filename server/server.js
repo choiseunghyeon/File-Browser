@@ -1,5 +1,6 @@
 var express = require("express");
 const fs = require("fs");
+const { createFile, createDirectory } = require("./utils");
 var app = express();
 app.all("/*", function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -27,7 +28,7 @@ app.get("/all", function (req, res) {
 
   const list = fs.readdirSync(path, { withFileTypes: true });
   const dirList = list.reduce((arr, filePath) => {
-    arr.push(filePath);
+    filePath.isDirectory() ? arr.push(createDirectory(filePath.name)) : arr.push(createFile(filePath.name));
     return arr;
   }, []);
 

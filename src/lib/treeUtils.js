@@ -1,7 +1,8 @@
 let uid = 1;
-export const createTreeData = (parentNode, directory) => ({
+export const createTreeData = (parentNode, file) => ({
   id: "" + uid++,
-  name: directory.name,
+  name: file.name,
+  type: file.type,
   parentNode,
   // children: [],
 });
@@ -41,16 +42,10 @@ export const getNodeById = (node, id) => {
   }
 };
 
-export const getNodeByName = (node, name) => {
-  const q = [node];
+export const isDirectory = node => {
+  return node.type === "dir";
+};
 
-  while (q.length !== 0) {
-    const currentNode = q.shift();
-    if (typeof currentNode === "undefined") break;
-
-    if (currentNode.name === name) {
-      return currentNode;
-    }
-    currentNode.children?.forEach(node => q.push(node));
-  }
+export const hasDirectory = nodeList => {
+  return nodeList.some(node => isDirectory(node));
 };

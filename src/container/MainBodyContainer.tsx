@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import http from '../api/http';
 import Item from '../components/Item';
-import { getAbsolutePath, getNodeById, getNodeByName } from '../lib/treeUtils';
+import { getAbsolutePath, getNodeById, isDirectory } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 
 interface IMainBodyContainerProps {
@@ -11,36 +11,29 @@ interface IMainBodyContainerProps {
 }
 
 export const MainBodyContainer = function({ currentNode, updateChildren, changeCurrentNodeId }: IMainBodyContainerProps){
-    const [items, setItems] = useState<any[]>([]);
-    const [selectedName, setSelectedName] = useState('');
-
-    const changeSelectedName = useCallback((event) => {
-        setSelectedName(event.target.id);
+    // const [items, setItems] = useState<any[]>([]);
+    const [selectedNodeId, setSelectedNodeId] = useState('');
+    
+    const changeSelectedNodeId = useCallback((event) => {
+        setSelectedNodeId(event.target.id);
     }, []);
-
+    
     const handleDblClick = async () => {
-        const selectedNode = getNodeByName(currentNode, selectedName);
-        if (selectedNode.children === undefined) {
-            const absolutePath = getAbsolutePath(selectedNode);
-            const directories = await http.get(`http://localhost:3000/dir?path=${absolutePath.join('/')}`);
-            updateChildren(selectedNode.name, directories);
-        }
+        const selectedNode = getNodeById(currentNode, selectedNodeId);
+        if (!isDirectory(selectedNode)) return;
 
-        changeCurrentNodeId(selectedNode.name);     
+        const absolutePath = getAbsolutePath(selectedNode);
+        const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+        updateChildren(selectedNode.id, allFile);
+        changeCurrentNodeId(selectedNode.id);     
+
     }
-
-    useEffect(() => {
-        async function getFiles () {
-            const absolutePath = getAbsolutePath(currentNode);
-            const files = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
-            setItems(files);
-        }
-        getFiles();
-    }, [currentNode]);
-
+        
+        
+    if (!currentNode.children) return null;
     return (
         <div className="body">
-            {items.map(item => <Item key={item.name} name={item.name} selectedName={selectedName} changeSelectedName={changeSelectedName} handleDblClick={handleDblClick}/>)}
+            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} handleDblClick={handleDblClick}/>)}
         </div>
     ) 
 }

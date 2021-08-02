@@ -1,5 +1,5 @@
 import { IPath } from '../types/common';
-import TooltipComponent from '../components/TooltipComponent';
+import LayerComponent from './LayerComponent';
 interface IPathProps {
     path: IPath;
     changeCurrentNodeId: Function;
@@ -13,7 +13,7 @@ export default function Path({path, changeCurrentNodeId, updateChildren}: IPathP
     return (<div>
                 <span>
                     <span onClick={() => changeCurrentNodeId(id)}>{name}</span>
-                    {children && children.length > 0 && <TooltipComponent items={children} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />}
+                    {children && children.length > 0 && <LayerComponent nodeList={children} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />}
                 </span>
             </div>)
 }

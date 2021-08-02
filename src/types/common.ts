@@ -7,6 +7,7 @@ export interface IPath {
 export interface IRenderTree {
     id: string;
     name: string;
+    type: string;
     parentNode: IRenderTree | null;
     children?: IRenderTree[];
   }

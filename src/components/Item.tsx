@@ -1,17 +1,20 @@
+import { isDirectory } from "../lib/treeUtils";
+import { IRenderTree } from "../types/common";
+
 interface Props {
-    name: string;
-    selectedName: string;
-    changeSelectedName: (event: any) => void;
+    node: IRenderTree;
+    selectedNodeId: string;
+    changeSelectedNodeId: (event: any) => void;
     handleDblClick: (event: any) => void;
 }
 
-export default function Item({name, selectedName, changeSelectedName, handleDblClick}: Props) {
+export default function Item({node, selectedNodeId, changeSelectedNodeId, handleDblClick}: Props) {
 
     return (
-        <div id={name} onClick={changeSelectedName} onDoubleClick={handleDblClick} style={{
-            backgroundColor: selectedName === name ? "grey" : "white"
+        <div id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} style={{
+            backgroundColor: selectedNodeId === node.id ? "grey" : "white"
         }} >
-            {name}
+            <span>{isDirectory(node) ? '폴더' : '파일' }</span> {node.name}
         </div>
     )
 }

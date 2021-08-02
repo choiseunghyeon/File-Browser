@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import http from '../api/http'
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
@@ -8,17 +8,10 @@ import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { useSpring, animated } from 'react-spring'; // web.cjs is required for IE 11 support
-import { getAbsolutePath } from '../lib/treeUtils';
+import { getAbsolutePath, isDirectory } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 
 
-
-interface IMainTreeProps {
-  tree: IRenderTree;
-  updateChildren: Function;
-  currentNodeId: string;
-  changeCurrentNodeId: Function;
-}
 
 const useStyles = makeStyles({
   root: {
@@ -28,17 +21,24 @@ const useStyles = makeStyles({
   },
 });
 
+interface IMainTreeProps {
+  tree: IRenderTree;
+  updateChildren: Function;
+  currentNodeId: string;
+  changeCurrentNodeId: Function;
+}
+
 export default function MainTree({tree, updateChildren, changeCurrentNodeId, currentNodeId}: IMainTreeProps) {
   const classes = useStyles();
   useEffect(() => {
     async function getDirectory () {
       const absolutePath = getAbsolutePath(tree);
-      const directories = await http.get(`http://localhost:3000/dir?path=${absolutePath.join('/')}`);
-      updateChildren(tree.id, directories);
+      const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+      updateChildren(tree.id, allFile);
       changeCurrentNodeId(tree.id);
     }
     getDirectory();
-  }, []) // mounted
+  }, []) // only mounted
 
   return (
     <TreeView
@@ -61,12 +61,14 @@ interface IRecursiveTree {
 function RecursiveTree ({node, updateChildren, changeSelectedNodeId}: IRecursiveTree) {
   const {id, name, children} = node;
   
+  if (!isDirectory(node)) return null;
+
   const getDirectoryList = async (e) => {
     // 나중에 분리 mouseover, dblclick? 등
     if (typeof children === "undefined") {
       const absolutePath = getAbsolutePath(node);
-      const directories = await http.get(`http://localhost:3000/dir?path=${absolutePath.join('/')}`);
-      updateChildren(id, directories);
+      const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+      updateChildren(id, allFile);
     }
 
     changeSelectedNodeId(id);
