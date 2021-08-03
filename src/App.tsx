@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback} from 'react';
 import "./resources/app.global.css"
 import TopContainer from './container/TopContainer';
 import { MainContainer } from './container/MainContainer';
 import  NavContainer   from './container/NavContainer';
 import { TreeContainer } from './container/TreeContainer';
 import StatusbarContainer from './container/StatusBarContainer';
+import ContextMenu from './components/context/ContextMenu';
 import produce from 'immer';
 import { createTreeData, getNodeById } from './lib/treeUtils';
-import { useCallback } from 'react';
-import { useMemo } from 'react';
 import { IRenderTree } from './types/common';
-
+import { Item, useContextMenu } from 'react-contexify';
+import { MENU_ID, PATH_LAYER_ID } from './lib/contextUtils';
+import PathLayer from './components/context/PathLayer';
 
 const initialPath = "C:/";
 
@@ -23,6 +24,7 @@ const initialData: IRenderTree = {
 
 export default function App() {
     const [tree, setTree] = useState(initialData);
+    const [layer, setLayer] = useState(false);
     const [currentNodeId, setCurrentNodeId] = useState('root')
     
     const currentNode = useMemo(() => getNodeById(tree, currentNodeId), [tree, currentNodeId]);
@@ -40,8 +42,23 @@ export default function App() {
         })
       }, []);
 
+      const { show } = useContextMenu();
+      function displayLayer (e) {
+        show(e, {
+            id: PATH_LAYER_ID
+          })
+        setLayer(prevLayer => !prevLayer);
+    }
+     
+      function displayMenu(e){
+        // put whatever custom logic you need
+        // you can even decide to not display the Menu
+        show(e, { props: { id: Number(e.currentTarget.id), data: 'choi' } });
+      }
+
     return (
-        <div className="app-container">
+      <>
+        <div className="app-container" onContextMenu={displayLayer}>
             <TopContainer/>
             <NavContainer currentNode={currentNode} updateChildren={updateChildren} changeCurrentNodeId={changeCurrentNodeId} />
             <TreeContainer tree={tree} updateChildren={updateChildren} currentNodeId={currentNodeId} changeCurrentNodeId={changeCurrentNodeId}/>
@@ -49,6 +66,24 @@ export default function App() {
             <StatusbarContainer/>
             {/* <Spinner /> */}
         </div>
+
+
+      {layer && <PathLayer node={children} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />}
+
+        <ContextMenu menuId={MENU_ID}>
+          <Item id="remove">
+            Item 1
+            </Item>
+            <Item>
+            Item 2
+            </Item>
+            <Item disabled>Disabled</Item>
+            <Item >
+                Sub Item 1
+            </Item>
+        </ContextMenu>
+        
+      </>
     )
 }
 
