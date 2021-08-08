@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import http from '../api/http'
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -10,6 +9,7 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import { useSpring, animated } from 'react-spring'; // web.cjs is required for IE 11 support
 import { getAbsolutePath, isDirectory } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
+import { list } from '../api/fileBrowser';
 
 
 
@@ -32,8 +32,7 @@ export default function MainTree({tree, updateChildren, changeCurrentNodeId, cur
   const classes = useStyles();
   useEffect(() => {
     async function getDirectory () {
-      const absolutePath = getAbsolutePath(tree);
-      const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+      const allFile = await list(getAbsolutePath(tree))
       updateChildren(tree.id, allFile);
       changeCurrentNodeId(tree.id);
     }
@@ -66,8 +65,7 @@ function RecursiveTree ({node, updateChildren, changeSelectedNodeId}: IRecursive
   const getDirectoryList = async (e) => {
     // 나중에 분리 mouseover, dblclick? 등
     if (typeof children === "undefined") {
-      const absolutePath = getAbsolutePath(node);
-      const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+      const allFile = await list(getAbsolutePath(node))
       updateChildren(id, allFile);
     }
 

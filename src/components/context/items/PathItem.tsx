@@ -1,5 +1,5 @@
 import { Item } from "react-contexify";
-import http from "../../../api/http";
+import { list } from "../../../api/fileBrowser";
 import { getAbsolutePath, isDirectory } from "../../../lib/treeUtils";
 import { IRenderTree } from "../../../types/common";
 
@@ -16,8 +16,7 @@ interface INodeProps {
   
     const handleClick = async () => {
       if (typeof children === "undefined") {
-        const absolutePath = getAbsolutePath(node);
-        const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+        const allFile = await list(getAbsolutePath(node));
         updateChildren(id, allFile);
       }
   

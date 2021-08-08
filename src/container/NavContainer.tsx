@@ -21,7 +21,7 @@ export default function NavContainer({currentNode, changeCurrentNodeId, updateCh
                     <span className="icon right-arrow"></span>
                 </li>
                 <li className="menu-stack">
-                    {currentPath.map(path => <Path path={path} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren}/>)}
+                    {currentPath.map(path => <Path path={path} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />)}
                 </li>
             </ul>
         </div>

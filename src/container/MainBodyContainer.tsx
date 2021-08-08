@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { list } from '../api/fileBrowser';
 import http from '../api/http';
 import Item from '../components/Item';
 import { getAbsolutePath, getNodeById, isDirectory } from '../lib/treeUtils';
@@ -22,8 +23,7 @@ export const MainBodyContainer = function({ currentNode, updateChildren, changeC
         const selectedNode = getNodeById(currentNode, selectedNodeId);
         if (!isDirectory(selectedNode)) return;
 
-        const absolutePath = getAbsolutePath(selectedNode);
-        const allFile = await http.get(`http://localhost:3000/all?path=${absolutePath.join('/')}`);
+        const allFile = await list(getAbsolutePath(selectedNode))
         updateChildren(selectedNode.id, allFile);
         changeCurrentNodeId(selectedNode.id);     
 
@@ -33,7 +33,7 @@ export const MainBodyContainer = function({ currentNode, updateChildren, changeC
     if (!currentNode.children) return null;
     return (
         <div className="body">
-            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} handleDblClick={handleDblClick}/>)}
+            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} updateChildren={updateChildren} handleDblClick={handleDblClick}/>)}
         </div>
     ) 
 }

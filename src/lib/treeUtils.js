@@ -13,7 +13,7 @@ export const getAbsolutePath = node => {
     result.push(node.name);
     node = node.parentNode;
   }
-  return result.reverse();
+  return result.reverse().join("/");
 };
 
 export const getCurrentPath = node => {

@@ -1,8 +1,9 @@
 import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
+import { useCallback } from 'react';
 import { useContextMenu } from 'react-contexify';
-import { PATH_LAYER_ID } from '../lib/contextUtils';
+import { MENU_ID, PATH_LAYER_ID } from '../lib/contextUtils';
+import { hasDirectory } from '../lib/treeUtils';
 import { IPath } from '../types/common';
-import PathLayer from './context/PathLayer';
 
 interface IPathProps {
     path: IPath;
@@ -12,21 +13,27 @@ interface IPathProps {
 
 export default function Path({path, changeCurrentNodeId, updateChildren}: IPathProps) {
     const {name, children, id} = path;
-    const { show } = useContextMenu();
-    
-    function displayLayer (e) {
+    const { show } = useContextMenu({
+        id: MENU_ID,
+    });
+    const displayLayer = useCallback((e) => {
         show(e, {
-            id: PATH_LAYER_ID
-          })
-    }
+            props: {
+                layerId: PATH_LAYER_ID,
+                childrenNode: children,
+                changeCurrentNodeId: changeCurrentNodeId,
+                updateChildren: updateChildren
+            }
+        })
+    }, [path, changeCurrentNodeId, updateChildren]);
+    
     return (
         <div>
             <span>
                 <span onClick={() => changeCurrentNodeId(id)}>{name}</span>
-                {children && children.length > 0 && (
-                            <div style={{display: "inline-block"}}>
-                            <span onClick={displayLayer}> <ArrowForwardIos style={{fontSize: 12}} /> </span>
-                            <PathLayer nodeList={children} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />
+                {children && hasDirectory(children) && (
+                        <div style={{display: "inline-block"}}>
+                            <span onClick={(displayLayer)}> <ArrowForwardIos style={{fontSize: 12}} /> </span>
                         </div>)
                 }
             </span>
