@@ -30,10 +30,10 @@ export default function Path({path, changeCurrentNodeId, updateChildren}: IPathP
     return (
         <div>
             <span>
-                <span onClick={() => changeCurrentNodeId(id)}>{name}</span>
+                <span data-testid="pathSpan" onClick={() => changeCurrentNodeId(id)}>{name}</span>
                 {children && hasDirectory(children) && (
                         <div style={{display: "inline-block"}}>
-                            <span onClick={(displayLayer)}> <ArrowForwardIos style={{fontSize: 12}} /> </span>
+                            <span data-testid="pathNavigation" onClick={(displayLayer)}> <ArrowForwardIos style={{fontSize: 12}} /> </span>
                         </div>)
                 }
             </span>

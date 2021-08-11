@@ -28,7 +28,7 @@ app.get("/dir", function (req, res) {
     return arr;
   }, []);
 
-  res.send(dirList);
+  res.json(dirList);
 });
 
 app.get("/all", function (req, res) {
@@ -40,7 +40,7 @@ app.get("/all", function (req, res) {
     return arr;
   }, []);
 
-  res.send(dirList);
+  res.json(dirList);
 });
 
 app.delete("/file", function (req, res) {
@@ -50,10 +50,10 @@ app.delete("/file", function (req, res) {
   try {
     fs.unlinkSync(path);
   } catch (error) {
-    res.send("삭제 과정에 문제가 있었습니다.");
+    res.json("삭제 과정에 문제가 있었습니다.");
   }
 
-  res.send("성공적으로 삭제되었습니다.");
+  res.json("성공적으로 삭제되었습니다.");
 });
 
 app.delete("/folder", function (req, res) {
@@ -63,12 +63,12 @@ app.delete("/folder", function (req, res) {
   try {
     fs.rmdirSync(path, { recursive: true });
   } catch (error) {
-    res.send("삭제 과정에 문제가 있었습니다.");
+    res.json("삭제 과정에 문제가 있었습니다.");
   }
 
-  res.send("성공적으로 삭제되었습니다.");
+  res.json("성공적으로 삭제되었습니다.");
 });
 
-app.listen(3000, function () {
-  console.log("Example app listening on port 3000!");
+app.listen(5000, function () {
+  console.log("Example app listening on port 5000!");
 });

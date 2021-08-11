@@ -28,7 +28,7 @@ export default function Item({node, selectedNodeId, changeSelectedNodeId, handle
     }, [changeSelectedNodeId, node, updateChildren]);
 
     return (
-        <div id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} onContextMenu={displayLayer} style={{
+        <div data-testid="item" id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} onContextMenu={displayLayer} style={{
             backgroundColor: selectedNodeId === node.id ? "grey" : "white"
         }} >
             <span>{isDirectory(node) ? '폴더' : '파일' }</span> {node.name}

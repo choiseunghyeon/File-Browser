@@ -74,7 +74,7 @@ function RecursiveTree ({node, updateChildren, changeSelectedNodeId}: IRecursive
   }
 
   return (
-    <StyledTreeItem key={id} nodeId={id} label={name} onLabelClick={getDirectoryList}>
+    <StyledTreeItem  data-testid="treeItem" key={id} nodeId={id} label={name} onLabelClick={getDirectoryList}>
       {children ? children.map((node) => <RecursiveTree node={node} updateChildren={updateChildren} changeSelectedNodeId={changeSelectedNodeId} />) : null}
     </StyledTreeItem>
   );

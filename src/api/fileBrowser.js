@@ -4,7 +4,7 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:5000";
 
 export const deleteFile = filePath => {
   const URL = `${BASE_URL}/file`;
