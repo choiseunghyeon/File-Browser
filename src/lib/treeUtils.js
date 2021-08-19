@@ -18,12 +18,11 @@ export const getAbsolutePath = node => {
 
 export const getCurrentPath = node => {
   let result = [];
-  while (node) {
+
+  do {
     result.push({ ...node });
     node = node.parentNode;
-  }
-
-  result.push({ ...node });
+  } while (node);
 
   return result.reverse();
 };

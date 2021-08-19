@@ -2,7 +2,7 @@ import { Item } from "react-contexify";
 import { list } from "../../../api/fileBrowser";
 import { getAbsolutePath, isDirectory } from "../../../lib/treeUtils";
 import { IRenderTree } from "../../../types/common";
-
+import { layerPathValue } from '../../../tests/constValue';
 interface INodeProps {
     node: IRenderTree;
     updateChildren: Function;
@@ -24,7 +24,7 @@ interface INodeProps {
     }
   
     return (
-      <Item onClick={handleClick}>
+      <Item onClick={handleClick} data-testid={layerPathValue}>
         {name}
       </Item>
     )

@@ -3,7 +3,7 @@ import { useContextMenu } from "react-contexify";
 import { FILE_LAYER_ID, FOLDER_LAYER_ID, MENU_ID } from "../lib/contextUtils";
 import { isDirectory } from "../lib/treeUtils";
 import { IRenderTree } from "../types/common";
-
+import { itemValue } from '../tests/constValue';
 interface Props {
     node: IRenderTree;
     selectedNodeId: string;
@@ -28,7 +28,7 @@ export default function Item({node, selectedNodeId, changeSelectedNodeId, handle
     }, [changeSelectedNodeId, node, updateChildren]);
 
     return (
-        <div data-testid="item" id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} onContextMenu={displayLayer} style={{
+        <div data-testid={itemValue} id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} onContextMenu={displayLayer} style={{
             backgroundColor: selectedNodeId === node.id ? "grey" : "white"
         }} >
             <span>{isDirectory(node) ? '폴더' : '파일' }</span> {node.name}

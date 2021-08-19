@@ -4,6 +4,7 @@ import { useContextMenu } from 'react-contexify';
 import { MENU_ID, PATH_LAYER_ID } from '../lib/contextUtils';
 import { hasDirectory } from '../lib/treeUtils';
 import { IPath } from '../types/common';
+import { pathValue, pathArrowValue } from '../tests/constValue';
 
 interface IPathProps {
     path: IPath;
@@ -30,10 +31,10 @@ export default function Path({path, changeCurrentNodeId, updateChildren}: IPathP
     return (
         <div>
             <span>
-                <span data-testid="pathSpan" onClick={() => changeCurrentNodeId(id)}>{name}</span>
+                <span data-testid={pathValue} onClick={() => changeCurrentNodeId(id)}>{name}</span>
                 {children && hasDirectory(children) && (
                         <div style={{display: "inline-block"}}>
-                            <span data-testid="pathNavigation" onClick={(displayLayer)}> <ArrowForwardIos style={{fontSize: 12}} /> </span>
+                            <span data-testid={pathArrowValue} onClick={(displayLayer)}> <ArrowForwardIos style={{fontSize: 12}} /> </span>
                         </div>)
                 }
             </span>

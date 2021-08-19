@@ -10,7 +10,7 @@ import { useSpring, animated } from 'react-spring'; // web.cjs is required for I
 import { getAbsolutePath, isDirectory } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 import { list } from '../api/fileBrowser';
-
+import { treeValue } from '../tests/constValue';
 
 
 const useStyles = makeStyles({
@@ -74,7 +74,7 @@ function RecursiveTree ({node, updateChildren, changeSelectedNodeId}: IRecursive
   }
 
   return (
-    <StyledTreeItem  data-testid="treeItem" key={id} nodeId={id} label={name} onLabelClick={getDirectoryList}>
+    <StyledTreeItem  data-testid={treeValue} key={id} nodeId={id} label={name} onLabelClick={getDirectoryList}>
       {children ? children.map((node) => <RecursiveTree node={node} updateChildren={updateChildren} changeSelectedNodeId={changeSelectedNodeId} />) : null}
     </StyledTreeItem>
   );

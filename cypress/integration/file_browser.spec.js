@@ -1,24 +1,4 @@
-const initialState = [
-  { type: "dir", name: "Data" },
-  { type: "dir", name: "Image" },
-  { type: "dir", name: "Setup" },
-  { type: "file", name: "testFile" },
-];
-
-const nextState = [
-  { type: "dir", name: "history" },
-  { type: "dir", name: "nextFolder" },
-  { type: "file", name: "nextFile" },
-];
-
-const itemSelector = "[data-testid=item]";
-const pathSelector = "[data-testid=pathSpan]";
-const pathArrowSelector = "[data-testid=pathNavigation]";
-const treeItemSelector = "[data-testid=treeItem]";
-
-const initialPath = "C:/";
-const nextPath = "C:/Data";
-const BASE_URL = "http://localhost:5000";
+import { itemSelector, pathSelector, pathArrowSelector, treeItemSelector, initialPath, initialState, nextPath, nextState, BASE_URL, layerPathSelect } from "../../src/tests/constValue";
 
 beforeEach(() => {
   cy.intercept("GET", `${BASE_URL}/all?path=${initialPath}`, {
@@ -27,7 +7,7 @@ beforeEach(() => {
     //   query: {
     //     path: "C:/",
     //   },
-  });
+  }).as("getRootPath");
 
   cy.intercept("GET", `${BASE_URL}/all?path=${nextPath}`, {
     body: nextState,
@@ -51,10 +31,6 @@ describe("render file-browser", () => {
       expect(items[3]).to.have.contain("testFile");
     });
 
-    // navigation
-    cy.get(pathSelector).contains(initialPath);
-    cy.get(pathArrowSelector);
-
     // tree
     cy.get(treeItemSelector)
       .within(items => {
@@ -62,55 +38,23 @@ describe("render file-browser", () => {
         expect(items[0]).to.have.contain(initialPath);
       })
       .click();
+
     cy.get(treeItemSelector).within(items => {
       expect(items).to.have.length(4);
       expect(items[1]).to.have.contain("Data");
       expect(items[2]).to.have.contain("Image");
       expect(items[3]).to.have.contain("Setup");
     });
-  });
-});
 
-describe("when item dblclick then move next path correctly", () => {
-  it("when mainbody item dblclick then move next path", () => {
-    /**
-     * navigation, tree, mainBody에서 folder 이동 기능 테스트
-     */
-    cy.visit("/");
+    // navigation
+    cy.get(pathSelector).contains(initialPath);
+    cy.get(pathArrowSelector).click();
 
-    cy.get(itemSelector).contains("Data").dblclick();
-
-    cy.get(itemSelector).within(items => {
-      expect(items).to.have.length(nextState.length);
-      expect(items[0]).to.have.contain("폴더");
-      expect(items[0]).to.have.contain("history");
-
-      expect(items[1]).to.have.contain("폴더");
-      expect(items[1]).to.have.contain("nextFolder");
-
-      expect(items[2]).to.have.contain("파일");
-      expect(items[2]).to.have.contain("nextFile");
+    cy.get(layerPathSelect).within(items => {
+      expect(items).to.have.length(3);
+      expect(items[0]).to.have.contain("Data");
+      expect(items[1]).to.have.contain("Image");
+      expect(items[2]).to.have.contain("Setup");
     });
   });
-
-  it("when tree item dblclick then move next path", () => {
-    cy.visit("/");
-
-    cy.get(treeItemSelector).contains("C:/").click();
-
-    cy.get(treeItemSelector).contains("Data").click();
-
-    cy.get(itemSelector).within(items => {
-      expect(items).to.have.length(nextState.length);
-      expect(items[0]).to.have.contain("폴더");
-      expect(items[0]).to.have.contain("history");
-
-      expect(items[1]).to.have.contain("폴더");
-      expect(items[1]).to.have.contain("nextFolder");
-
-      expect(items[2]).to.have.contain("파일");
-      expect(items[2]).to.have.contain("nextFile");
-    });
-  });
-  // navigation에서 layer 나오는거 이동 테스트 하기
 });

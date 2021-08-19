@@ -12,7 +12,7 @@ interface INavContainerProps {
 
 export default function NavContainer({currentNode, changeCurrentNodeId, updateChildren}: INavContainerProps) {
     const currentPath = useMemo(() => getCurrentPath(currentNode), [currentNode]);
-
+    console.log(currentPath);
     return (
         <div className="nav">
             <ul className="flex">
@@ -21,7 +21,10 @@ export default function NavContainer({currentNode, changeCurrentNodeId, updateCh
                     <span className="icon right-arrow"></span>
                 </li>
                 <li className="menu-stack">
-                    {currentPath.map(path => <Path path={path} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />)}
+                    {
+                        currentPath
+                        .map(path => <Path path={path} changeCurrentNodeId={changeCurrentNodeId} updateChildren={updateChildren} />)
+                    }
                 </li>
             </ul>
         </div>
