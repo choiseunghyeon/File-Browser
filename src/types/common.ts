@@ -11,3 +11,16 @@ export interface IRenderTree {
     parentNode: IRenderTree | null;
     children?: IRenderTree[];
   }
+
+export interface ITreeReq {
+  path: string;
+}
+
+export interface ITreeRes {
+  fileInfoList: FileInfo[];
+}
+
+export interface FileInfo {
+  type: 'dir' | 'file';
+  name: string;
+}

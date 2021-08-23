@@ -1,5 +1,5 @@
 import { Item } from "react-contexify";
-import { list } from "../../../api/fileBrowser";
+import { getAllList } from "../../../api/fileBrowser";
 import { getAbsolutePath, isDirectory } from "../../../lib/treeUtils";
 import { IRenderTree } from "../../../types/common";
 import { layerPathValue } from '../../../tests/constValue';
@@ -16,8 +16,7 @@ interface INodeProps {
   
     const handleClick = async () => {
       if (typeof children === "undefined") {
-        const allFile = await list(getAbsolutePath(node));
-        updateChildren(id, allFile);
+        updateChildren(node);
       }
   
       changeCurrentNodeId(id);    

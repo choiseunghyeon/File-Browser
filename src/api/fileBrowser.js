@@ -28,7 +28,7 @@ export const deleteFolder = folderPath => {
   );
 };
 
-export const list = path => {
+export const getAllList = path => {
   const URL = `${BASE_URL}/all?path=${path}`;
   return http.get(URL, {});
 };

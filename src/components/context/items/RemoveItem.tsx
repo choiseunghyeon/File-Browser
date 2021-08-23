@@ -1,6 +1,6 @@
 import { Item } from 'react-contexify';
-import { deleteFile, deleteFolder, list } from '../../../api/fileBrowser';
-import { getAbsolutePath, isDirectory } from '../../../lib/treeUtils';
+import { useDispatch } from 'react-redux';
+import { deleteNode } from '../../../redux/modules/tree';
 import { IRenderTree } from '../../../types/common';
 
 interface Props {
@@ -9,21 +9,10 @@ interface Props {
 }
 
 export default function RemoveItem({node, updateChildren}: Props) {
-
+    const dispatch = useDispatch();
     const handleClick = async () => {
-        if (isDirectory(node)) {
-            await deleteFolder(getAbsolutePath(node));
-        } else {
-            await deleteFile(getAbsolutePath(node));
-        }
-        
-        const parentNode = node.parentNode;
-        const allFile = await list(getAbsolutePath(parentNode))
-        if (parentNode !== null) {
-            updateChildren(parentNode.id, allFile);
-        }
+        dispatch(deleteNode(node))
     }
-    console.log(node);
     return (
         <Item onClick={handleClick}>
             삭제

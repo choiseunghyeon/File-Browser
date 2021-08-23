@@ -37,6 +37,7 @@ export const getNodeById = (node, id) => {
     if (currentNode.id === id) {
       return currentNode;
     }
+
     currentNode.children?.forEach(node => q.push(node));
   }
 };

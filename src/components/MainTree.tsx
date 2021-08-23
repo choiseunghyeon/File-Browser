@@ -7,9 +7,8 @@ import TreeItem, { TreeItemProps } from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { useSpring, animated } from 'react-spring'; // web.cjs is required for IE 11 support
-import { getAbsolutePath, isDirectory } from '../lib/treeUtils';
+import { isDirectory } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
-import { list } from '../api/fileBrowser';
 import { treeValue } from '../tests/constValue';
 
 
@@ -32,8 +31,8 @@ export default function MainTree({tree, updateChildren, changeCurrentNodeId, cur
   const classes = useStyles();
   useEffect(() => {
     async function getDirectory () {
-      const allFile = await list(getAbsolutePath(tree))
-      updateChildren(tree.id, allFile);
+      // 초기 store 설정 시 api 요청해서 기본 값으로 가지고 있도록 옮기기
+      updateChildren(tree);
       changeCurrentNodeId(tree.id);
     }
     getDirectory();
@@ -65,8 +64,7 @@ function RecursiveTree ({node, updateChildren, changeSelectedNodeId}: IRecursive
   const getDirectoryList = async (e) => {
     // 나중에 분리 mouseover, dblclick? 등
     if (typeof children === "undefined") {
-      const allFile = await list(getAbsolutePath(node))
-      updateChildren(id, allFile);
+      updateChildren(node);
     }
 
     changeSelectedNodeId(id);
