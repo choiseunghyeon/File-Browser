@@ -9,6 +9,7 @@ import { deleteFile, deleteFolder, getAllList } from '../../api/fileBrowser';
 export interface TreeState {
   tree: IRenderTree;
   currentNodeId: string;
+  treeMap: any;
   loading: boolean;
   error: Error | null;
 }
@@ -18,6 +19,7 @@ const initialState: TreeState = reducerUtils.init();
 const options = {
   prefix: 'tree',
 }
+
 export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange} = createActions(
   {
     TREE_UPDATE: (tree: any) => tree,
@@ -35,16 +37,18 @@ const reducer = handleActions<TreeState, any>(
     TREE_UPDATE: (state, { payload }) => {
       let {allFile, tree} = payload;
       if (allFile !== null ) {
-        return produce(state, draft => {
-          const targetNode = getNodeById(draft.tree, tree.id);
-          const children = allFile.map(file => createTreeData(original(targetNode), file));
-          // 여기서 값 동기화 이루어지지 않음
-          // delete 하려고 할 때 parentNode에서 children이 없음 값이 동기화 되지 않아서
-          targetNode.children = children;
-          draft.loading = false;
-          draft.error = null;
-        })
-      } else return {
+        const targetNode = getNodeById(state.tree, tree.id);
+        const children = allFile.map(file => createTreeData(targetNode, file));
+        targetNode.children = children;
+        // return produce(state, draft => {
+        //   // 여기서 값 동기화 이루어지지 않음
+        //   // delete 하려고 할 때 parentNode에서 children이 없음 값이 동기화 되지 않아서
+
+        //   draft.loading = false;
+        //   draft.error = null;
+        // })
+      }
+      return {
         ...state,
         error: null,
         loading: false,

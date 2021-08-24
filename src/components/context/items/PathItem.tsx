@@ -1,6 +1,5 @@
 import { Item } from "react-contexify";
-import { getAllList } from "../../../api/fileBrowser";
-import { getAbsolutePath, isDirectory } from "../../../lib/treeUtils";
+import { isDirectory } from "../../../lib/treeUtils";
 import { IRenderTree } from "../../../types/common";
 import { layerPathValue } from '../../../tests/constValue';
 interface INodeProps {
