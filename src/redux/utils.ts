@@ -1,3 +1,4 @@
+import { changeTreeIntoFlatMap } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 
 const initialPath = "C:/";
@@ -14,6 +15,7 @@ export const reducerUtils = {
     return {
       tree: initialData,
       currentNodeId: 'root',
+      flatMap: changeTreeIntoFlatMap(initialData),
       loading: false,
       error: null,
     }
@@ -29,8 +31,11 @@ export const reducerUtils = {
     return {
       tree: initialData,
       currentNodeId: 'root',
+      flatMap: changeTreeIntoFlatMap(initialData),
       loading: false,
       error,
     }
   },
 }
+
+export const getFlatMap = state => state.treeState.flatMap;

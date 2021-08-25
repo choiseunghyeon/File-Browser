@@ -3,7 +3,7 @@ export const createTreeData = (parentNode, file) => ({
   id: "" + uid++,
   name: file.name,
   type: file.type,
-  parentNode,
+  parentNodeId: parentNode.id,
   // children: [],
 });
 
@@ -16,19 +16,41 @@ export const getAbsolutePath = node => {
   return result.reverse().join("/");
 };
 
-export const getCurrentPath = node => {
+export const getAbsolutePathIn = (flatMap, id) => {
   let result = [];
+  let node = flatMap[id];
+
+  while (node) {
+    result.push(node.name);
+    node = flatMap[node.parentNodeId];
+  }
+  return result.reverse().join("/");
+};
+
+export const getCurrentPath = (map, nodeId) => {
+  // let result = [];
+
+  // do {
+  //   result.push({ ...node });
+  //   node = node.parentNode;
+  // } while (node);
+
+  // return result.reverse();
+  let result = [];
+
+  let node = map[nodeId];
+  if (!node) return;
 
   do {
     result.push({ ...node });
-    node = node.parentNode;
+    node = map[node.parentNodeId];
   } while (node);
 
   return result.reverse();
 };
 
-export const getNodeById = (node, id) => {
-  const q = [node];
+export const getNodeInTree = (tree, id) => {
+  const q = [tree];
 
   while (q.length !== 0) {
     const currentNode = q.shift();
@@ -42,10 +64,44 @@ export const getNodeById = (node, id) => {
   }
 };
 
+export const getNodeInFlatMap = (flatMap, id) => {
+  return flatMap[id];
+};
+
 export const isDirectory = node => {
   return node.type === "dir";
 };
 
 export const hasDirectory = nodeList => {
   return nodeList.some(node => isDirectory(node));
+};
+
+export const changeTreeIntoFlatMap = tree => {
+  const flatMap = {};
+  const q = [tree];
+  while (q.length !== 0) {
+    const currentNode = q.shift();
+    if (typeof currentNode === "undefined") break;
+
+    const key = currentNode.id;
+    flatMap[key] = currentNode;
+
+    currentNode.children?.forEach(node => q.push(node));
+  }
+
+  return flatMap;
+};
+
+export const updateTreeChildrenIntoFlatMap = (tree, flatMap) => {
+  const q = [tree, ...tree.children];
+
+  while (q.length !== 0) {
+    const currentNode = q.shift();
+    if (typeof currentNode === "undefined") break;
+
+    const key = currentNode.id;
+    flatMap[key] = currentNode;
+  }
+
+  return flatMap;
 };

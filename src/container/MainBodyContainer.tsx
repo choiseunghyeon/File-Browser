@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import Item from '../components/Item';
-import { getNodeById, isDirectory } from '../lib/treeUtils';
+import { getNodeInTree, isDirectory } from '../lib/treeUtils';
 import { IRenderTree } from '../types/common';
 
 interface IMainBodyContainerProps {
@@ -17,7 +17,7 @@ export const MainBodyContainer = function({ currentNode, updateChildren, changeC
     }, []);
     
     const handleDblClick = async () => {
-        const selectedNode = getNodeById(currentNode, selectedNodeId);
+        const selectedNode = getNodeInTree(currentNode, selectedNodeId);
         if (!isDirectory(selectedNode)) return;
 
         updateChildren(selectedNode);

@@ -6,13 +6,13 @@ import { IRenderTree } from '../types/common';
 interface INavContainerProps {
     updateChildren: Function;
     changeCurrentNodeId: Function;
-    currentNode: IRenderTree;   
+    currentPath: any;   
 }
 
 
-export default function NavContainer({currentNode, changeCurrentNodeId, updateChildren}: INavContainerProps) {
-    const currentPath = useMemo(() => getCurrentPath(currentNode), [currentNode]);
+export default function NavContainer({currentPath, changeCurrentNodeId, updateChildren}: INavContainerProps) {
     console.log(currentPath);
+    if (!currentPath) return null;
     return (
         <div className="nav">
             <ul className="flex">

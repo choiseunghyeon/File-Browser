@@ -1,15 +1,15 @@
 import { createActions, handleActions} from 'redux-actions';
-import {takeEvery, put, call} from 'redux-saga/effects';
-import { reducerUtils } from '../utils';
+import {takeEvery, put, call, select} from 'redux-saga/effects';
+import { getFlatMap, reducerUtils } from '../utils';
 import { IRenderTree } from '../../types/common';
-import produce, { original } from 'immer';
-import { createTreeData, getAbsolutePath, getNodeById, isDirectory } from '../../lib/treeUtils';
+import produce from 'immer';
+import { createTreeData, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateTreeChildrenIntoFlatMap } from '../../lib/treeUtils';
 import { deleteFile, deleteFolder, getAllList } from '../../api/fileBrowser';
 
 export interface TreeState {
   tree: IRenderTree;
   currentNodeId: string;
-  treeMap: any;
+  flatMap: any;
   loading: boolean;
   error: Error | null;
 }
@@ -37,16 +37,16 @@ const reducer = handleActions<TreeState, any>(
     TREE_UPDATE: (state, { payload }) => {
       let {allFile, tree} = payload;
       if (allFile !== null ) {
-        const targetNode = getNodeById(state.tree, tree.id);
-        const children = allFile.map(file => createTreeData(targetNode, file));
-        targetNode.children = children;
-        // return produce(state, draft => {
-        //   // 여기서 값 동기화 이루어지지 않음
-        //   // delete 하려고 할 때 parentNode에서 children이 없음 값이 동기화 되지 않아서
+        return produce(state, draft => {
+          const targetNode = getNodeInTree(draft.tree, tree.id);
+          const children = allFile.map(file => createTreeData(targetNode, file));
+          targetNode.children = children;
 
-        //   draft.loading = false;
-        //   draft.error = null;
-        // })
+          updateTreeChildrenIntoFlatMap(targetNode, draft.flatMap);
+          
+          draft.loading = false;
+          draft.error = null;
+        })
       }
       return {
         ...state,
@@ -55,13 +55,15 @@ const reducer = handleActions<TreeState, any>(
       };
     },
     TREE_DELETE: (state, { payload: tree }) => {
-      console.log(tree);
       return produce(state, draft => {
-        let targetNode = getNodeById(draft.tree, tree.id);
-        if (targetNode.parentNode !== null) {
-          const parentNode = targetNode.parentNode;
+        let targetNode = getNodeInFlatMap(draft.flatMap, tree.id);
+        if (targetNode) {
+          let parentNode = getNodeInTree(draft.tree, targetNode.parentNodeId);
           const removableIndex = parentNode.children.findIndex((childNode) => childNode.id === targetNode.id);
           parentNode.children.splice(removableIndex, 1);
+
+          draft.flatMap[parentNode.id] = parentNode;
+         delete draft.flatMap[targetNode.id];
         }
         draft.loading = false;
         draft.error = null;
@@ -82,9 +84,10 @@ export default reducer;
 
 function* getAllFileSaga(params){
   let { payload: tree } = params;
+  const flatMap = yield select(getFlatMap);
   try {
     yield put(treePending());
-    const allFile = yield call(getAllList, getAbsolutePath(tree));
+    const allFile = yield call(getAllList, getAbsolutePathIn(flatMap, tree.id));
     let payload = {
       allFile,
       tree,
@@ -98,12 +101,13 @@ function* getAllFileSaga(params){
 
 function* deleteNodeSaga(params) {
   let { payload: tree } = params;
+  const flatMap = yield select(getFlatMap);
   try {
     yield put(treePending());
     if (isDirectory(tree)) {
-      yield call(deleteFolder, getAbsolutePath(tree));
+      yield call(deleteFolder, getAbsolutePathIn(flatMap, tree.id));
     } else {
-      yield call(deleteFile, getAbsolutePath(tree));
+      yield call(deleteFile, getAbsolutePathIn(flatMap, tree.id));
     }
 
     yield put(treeDelete(tree));

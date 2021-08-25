@@ -1,6 +1,7 @@
 import { Item } from 'react-contexify';
 import { useDispatch } from 'react-redux';
 import { deleteNode } from '../../../redux/modules/tree';
+import { layerPathValue } from '../../../tests/constValue';
 import { IRenderTree } from '../../../types/common';
 
 interface Props {
@@ -14,7 +15,7 @@ export default function RemoveItem({node, updateChildren}: Props) {
         dispatch(deleteNode(node))
     }
     return (
-        <Item onClick={handleClick}>
+        <Item data-testid={layerPathValue} onClick={handleClick}>
             삭제
         </Item>
     )

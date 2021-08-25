@@ -6,7 +6,7 @@ import  NavContainer   from './container/NavContainer';
 import { TreeContainer } from './container/TreeContainer';
 import StatusbarContainer from './container/StatusBarContainer';
 import ContextMenu from './components/context/ContextMenu';
-import { getNodeById } from './lib/treeUtils';
+import { getCurrentPath, getNodeInTree } from './lib/treeUtils';
 import { MENU_ID } from './lib/contextUtils';
 import ItemCreator from './components/context/ItemCreator';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -15,14 +15,15 @@ import { currentNodeIdChange, getAllFiles } from './redux/modules/tree';
 
 
 export default function App() {
-    const dispatch = useDispatch();
-    const { tree, currentNodeId } = useSelector( (state: RootState) => ({
-      tree: state.treeState.tree,
-      currentNodeId: state.treeState.currentNodeId,
-    }), shallowEqual);
+  const dispatch = useDispatch();
+  const { tree, flatMap, currentNodeId } = useSelector( (state: RootState) => ({
+    tree: state.treeState.tree,
+    flatMap: state.treeState.flatMap,
+    currentNodeId: state.treeState.currentNodeId,
+  }), shallowEqual);
 
-    const currentNode = useMemo(() => getNodeById(tree, currentNodeId), [tree, currentNodeId]);
-    
+    const currentNode = useMemo(() => getNodeInTree(tree, currentNodeId), [tree, currentNodeId]);
+    const currentPath = useMemo(() => getCurrentPath(flatMap, currentNodeId), [flatMap, currentNodeId]);
     const changeCurrentNodeId = useCallback((id) => dispatch(currentNodeIdChange(id)), []);
 
     const updateChildren = useCallback( (tree) => {
@@ -33,7 +34,7 @@ export default function App() {
       <>
         <div className="app-container">
             <TopContainer/>
-            <NavContainer currentNode={currentNode} updateChildren={updateChildren} changeCurrentNodeId={changeCurrentNodeId} />
+            <NavContainer currentPath={currentPath} updateChildren={updateChildren} changeCurrentNodeId={changeCurrentNodeId} />
             <TreeContainer tree={tree} updateChildren={updateChildren} currentNodeId={currentNodeId} changeCurrentNodeId={changeCurrentNodeId}/>
             <MainContainer currentNode={currentNode} updateChildren={updateChildren} changeCurrentNodeId={changeCurrentNodeId} />
             <StatusbarContainer/>
