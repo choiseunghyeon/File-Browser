@@ -1,4 +1,17 @@
-import { itemSelector, pathSelector, pathArrowSelector, treeItemSelector, initialPath, initialState, nextPath, nextState, BASE_URL, layerPathSelect } from "../../src/tests/constValue";
+import {
+  itemSelector,
+  pathSelector,
+  pathArrowSelector,
+  treeItemSelector,
+  initialPath,
+  initialState,
+  nextPath,
+  nextState,
+  BASE_URL,
+  layerPathSelect,
+  previousPathSelector,
+} from "../../src/tests/constValue";
+import { validateNextPath, validateRootPath } from "../utils";
 
 /**
  * navigation, mainbody, tree에서 경로 이동에 대한 테스트
@@ -15,50 +28,31 @@ beforeEach(() => {
 
   cy.intercept("GET", `${BASE_URL}/all?path=${nextPath}`, {
     body: nextState,
-  });
+  }).as("getNextPath");
+
+  cy.visit("/");
+  cy.wait("@getRootPath");
+
+  validateRootPath();
 });
 
 describe("move next path", () => {
-  beforeEach(() => {
-    cy.visit("/");
-    cy.wait("@getRootPath");
-  });
   it("when mainbody item dblclick then move next path", () => {
-    /**
-     * navigation, tree, mainBody에서 folder 이동 기능 테스트
-     */
-
     cy.get(itemSelector).contains("Data").dblclick();
 
-    cy.get(itemSelector).within(items => {
-      expect(items).to.have.length(nextState.length);
-      expect(items[0]).to.have.contain("폴더");
-      expect(items[0]).to.have.contain("history");
+    cy.wait("@getNextPath");
 
-      expect(items[1]).to.have.contain("폴더");
-      expect(items[1]).to.have.contain("nextFolder");
-
-      expect(items[2]).to.have.contain("파일");
-      expect(items[2]).to.have.contain("nextFile");
-    });
+    validateNextPath();
   });
 
-  it("when tree item dblclick then move next path", () => {
+  it("when tree item click then move next path", () => {
     cy.get(treeItemSelector).contains("C:/").click();
 
     cy.get(treeItemSelector).contains("Data").click();
 
-    cy.get(itemSelector).within(items => {
-      expect(items).to.have.length(nextState.length);
-      expect(items[0]).to.have.contain("폴더");
-      expect(items[0]).to.have.contain("history");
+    cy.wait("@getNextPath");
 
-      expect(items[1]).to.have.contain("폴더");
-      expect(items[1]).to.have.contain("nextFolder");
-
-      expect(items[2]).to.have.contain("파일");
-      expect(items[2]).to.have.contain("nextFile");
-    });
+    validateNextPath();
   });
 
   it("when navigation layer click then move selected path", () => {
@@ -66,17 +60,9 @@ describe("move next path", () => {
 
     cy.get(layerPathSelect).contains("Data").click();
 
-    cy.get(itemSelector).within(items => {
-      expect(items).to.have.length(nextState.length);
-      expect(items[0]).to.have.contain("폴더");
-      expect(items[0]).to.have.contain("history");
+    cy.wait("@getNextPath");
 
-      expect(items[1]).to.have.contain("폴더");
-      expect(items[1]).to.have.contain("nextFolder");
-
-      expect(items[2]).to.have.contain("파일");
-      expect(items[2]).to.have.contain("nextFile");
-    });
+    validateNextPath();
 
     cy.get(pathArrowSelector).within(items => {
       expect(items).to.have.length(2);
@@ -86,5 +72,18 @@ describe("move next path", () => {
       expect(items).to.have.length(2);
     });
   });
-  // navigation에서 layer 나오는거 이동 테스트 하기
+});
+
+describe("move next path or previous path", () => {
+  it("move previous path", () => {
+    cy.get(itemSelector).contains("Data").dblclick();
+
+    cy.wait("@getNextPath");
+
+    validateNextPath();
+
+    cy.get(previousPathSelector).click();
+
+    validateRootPath();
+  });
 });

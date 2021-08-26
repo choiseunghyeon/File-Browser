@@ -12,6 +12,7 @@ import ItemCreator from './components/context/ItemCreator';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/modules/rootReducer';
 import { currentNodeIdChange, getAllFiles } from './redux/modules/tree';
+import { IRenderTree } from './types/common';
 
 
 export default function App() {
@@ -26,7 +27,7 @@ export default function App() {
     const currentPath = useMemo(() => getCurrentPath(flatMap, currentNodeId), [flatMap, currentNodeId]);
     const changeCurrentNodeId = useCallback((id) => dispatch(currentNodeIdChange(id)), []);
 
-    const updateChildren = useCallback( (tree) => {
+    const updateChildren = useCallback( (tree: IRenderTree) => {
         dispatch(getAllFiles(tree));
       }, []);
 

@@ -8,9 +8,13 @@ export interface IRenderTree {
     id: string;
     name: string;
     type: string;
-    parentNode: IRenderTree | null;
+    parentNodeId: string | null;
     children?: IRenderTree[];
-  }
+}
+
+export interface IFlatMap {
+  [key: string]: IRenderTree;
+}
 
 export interface ITreeReq {
   path: string;

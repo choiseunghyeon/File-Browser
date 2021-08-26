@@ -27,7 +27,7 @@ export const MainBodyContainer = function({ currentNode, updateChildren, changeC
     if (!currentNode.children) return null;
     return (
         <div className="body">
-            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} updateChildren={updateChildren} handleDblClick={handleDblClick}/>)}
+            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} updateChildren={updateChildren} handleDblClick={handleDblClick} changeCurrentNodeId={changeCurrentNodeId}/>)}
         </div>
     ) 
 }

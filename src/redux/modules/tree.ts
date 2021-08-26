@@ -1,15 +1,15 @@
 import { createActions, handleActions} from 'redux-actions';
 import {takeEvery, put, call, select} from 'redux-saga/effects';
 import { getFlatMap, reducerUtils } from '../utils';
-import { IRenderTree } from '../../types/common';
+import { IFlatMap, IRenderTree } from '../../types/common';
 import produce from 'immer';
-import { createTreeData, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateTreeChildrenIntoFlatMap } from '../../lib/treeUtils';
+import { createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap } from '../../lib/treeUtils';
 import { deleteFile, deleteFolder, getAllList } from '../../api/fileBrowser';
 
 export interface TreeState {
   tree: IRenderTree;
   currentNodeId: string;
-  flatMap: any;
+  flatMap: IFlatMap;
   loading: boolean;
   error: Error | null;
 }
@@ -42,28 +42,26 @@ const reducer = handleActions<TreeState, any>(
           const children = allFile.map(file => createTreeData(targetNode, file));
           targetNode.children = children;
 
-          updateTreeChildrenIntoFlatMap(targetNode, draft.flatMap);
+          updateFlatMap(draft.flatMap, [targetNode, ...targetNode.children]);
           
           draft.loading = false;
           draft.error = null;
         })
+      } else {
+        return {
+          ...state,
+          error: null,
+          loading: false,
+        };
       }
-      return {
-        ...state,
-        error: null,
-        loading: false,
-      };
     },
     TREE_DELETE: (state, { payload: tree }) => {
       return produce(state, draft => {
         let targetNode = getNodeInFlatMap(draft.flatMap, tree.id);
         if (targetNode) {
-          let parentNode = getNodeInTree(draft.tree, targetNode.parentNodeId);
-          const removableIndex = parentNode.children.findIndex((childNode) => childNode.id === targetNode.id);
-          parentNode.children.splice(removableIndex, 1);
-
-          draft.flatMap[parentNode.id] = parentNode;
-         delete draft.flatMap[targetNode.id];
+          const parentNode = getNodeInTree(draft.tree, targetNode.parentNodeId);
+          deleteChildNode(parentNode, draft.flatMap, targetNode.id)
+          updateFlatMap(draft.flatMap, [parentNode]);
         }
         draft.loading = false;
         draft.error = null;

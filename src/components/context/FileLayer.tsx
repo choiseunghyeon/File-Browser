@@ -15,7 +15,7 @@ export default function FileLayer({node, updateChildren}: ITooltipProps) {
       <Item>
           열기
       </Item>
-      <RemoveItem node={node} updateChildren={updateChildren}/> 
+      <RemoveItem node={node}/> 
     </>
   )
        

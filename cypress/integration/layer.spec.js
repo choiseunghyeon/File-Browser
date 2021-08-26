@@ -1,4 +1,5 @@
 import { itemSelector, pathSelector, pathArrowSelector, treeItemSelector, initialPath, initialState, nextPath, nextState, BASE_URL, layerPathSelect } from "../../src/tests/constValue";
+import { validateNextPath, validateRootPath } from "../utils";
 
 /**
  * navigation, mainbody, tree에서 경로 이동에 대한 테스트
@@ -15,7 +16,7 @@ beforeEach(() => {
 
   cy.intercept("GET", `${BASE_URL}/all?path=${nextPath}`, {
     body: nextState,
-  });
+  }).as("getNextPath");
 
   cy.intercept("DELETE", `${BASE_URL}/folder`).as("deleteFolder");
 });
@@ -24,6 +25,8 @@ describe("layer", () => {
   beforeEach(() => {
     cy.visit("/");
     cy.wait("@getRootPath");
+
+    validateRootPath();
   });
 
   it("render layer correctly", () => {
@@ -54,5 +57,15 @@ describe("layer", () => {
       expect(items[2]).to.have.contain("파일");
       expect(items[2]).to.have.contain("testFile");
     });
+  });
+
+  it("open folder from layer", () => {
+    cy.get(itemSelector).contains("Data").rightclick();
+
+    cy.get(layerPathSelect).contains("열기").click();
+
+    cy.wait("@getNextPath");
+
+    validateNextPath();
   });
 });

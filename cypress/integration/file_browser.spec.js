@@ -1,4 +1,5 @@
 import { itemSelector, pathSelector, pathArrowSelector, treeItemSelector, initialPath, initialState, nextPath, nextState, BASE_URL, layerPathSelect } from "../../src/tests/constValue";
+import { validateRootPath } from "../utils";
 
 beforeEach(() => {
   cy.intercept("GET", `${BASE_URL}/all?path=${initialPath}`, {
@@ -19,17 +20,7 @@ describe("render file-browser", () => {
     cy.visit("/");
 
     // main
-    cy.get(itemSelector).within(items => {
-      expect(items).to.have.length(initialState.length);
-      expect(items[0]).to.have.contain("폴더");
-      expect(items[0]).to.have.contain("Data");
-
-      expect(items[1]).to.have.contain("폴더");
-      expect(items[1]).to.have.contain("Image");
-
-      expect(items[3]).to.have.contain("파일");
-      expect(items[3]).to.have.contain("testFile");
-    });
+    validateRootPath();
 
     // tree
     cy.get(treeItemSelector)

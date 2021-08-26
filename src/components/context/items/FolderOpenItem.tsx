@@ -1,21 +1,21 @@
 import { Item } from 'react-contexify';
-import { useDispatch } from 'react-redux';
-import { deleteNode } from '../../../redux/modules/tree';
 import { layerPathValue } from '../../../tests/constValue';
 import { IRenderTree } from '../../../types/common';
 
 interface Props {
     node: IRenderTree;
+    updateChildren: Function;
+    changeCurrentNodeId: Function;
 }
 
-export default function RemoveItem({node}: Props) {
-    const dispatch = useDispatch();
+export default function FolderOpenItem({node, updateChildren, changeCurrentNodeId}: Props) {
     const handleClick = async () => {
-        dispatch(deleteNode(node))
+        updateChildren(node);
+        changeCurrentNodeId(node.id);
     }
     return (
         <Item data-testid={layerPathValue} onClick={handleClick}>
-            삭제
+            열기
         </Item>
     )
 }

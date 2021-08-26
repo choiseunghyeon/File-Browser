@@ -1,3 +1,5 @@
+import { IFlatMap, IRenderTree } from "../types/common";
+
 let uid = 1;
 export const createTreeData = (parentNode, file) => ({
   id: "" + uid++,
@@ -7,17 +9,8 @@ export const createTreeData = (parentNode, file) => ({
   // children: [],
 });
 
-export const getAbsolutePath = node => {
-  let result = [];
-  while (node !== null) {
-    result.push(node.name);
-    node = node.parentNode;
-  }
-  return result.reverse().join("/");
-};
-
 export const getAbsolutePathIn = (flatMap, id) => {
-  let result = [];
+  let result: string[] = [];
   let node = flatMap[id];
 
   while (node) {
@@ -36,14 +29,18 @@ export const getCurrentPath = (map, nodeId) => {
   // } while (node);
 
   // return result.reverse();
-  let result = [];
+  let result: IRenderTree[] = [];
 
-  let node = map[nodeId];
+  let node: IRenderTree = map[nodeId];
   if (!node) return;
 
   do {
     result.push({ ...node });
-    node = map[node.parentNodeId];
+    if (node.parentNodeId === null) {
+      break;
+    } else {
+      node = map[node.parentNodeId];
+    }
   } while (node);
 
   return result.reverse();
@@ -76,7 +73,7 @@ export const hasDirectory = nodeList => {
   return nodeList.some(node => isDirectory(node));
 };
 
-export const changeTreeIntoFlatMap = tree => {
+export const changeTreeIntoFlatMap = (tree: IRenderTree): IFlatMap => {
   const flatMap = {};
   const q = [tree];
   while (q.length !== 0) {
@@ -92,8 +89,8 @@ export const changeTreeIntoFlatMap = tree => {
   return flatMap;
 };
 
-export const updateTreeChildrenIntoFlatMap = (tree, flatMap) => {
-  const q = [tree, ...tree.children];
+export const updateFlatMap = (flatMap: IFlatMap, nodes: IRenderTree[]) => {
+  const q = nodes;
 
   while (q.length !== 0) {
     const currentNode = q.shift();
@@ -105,3 +102,14 @@ export const updateTreeChildrenIntoFlatMap = (tree, flatMap) => {
 
   return flatMap;
 };
+
+export const deleteChildNode = (node: IRenderTree, flatMap: IFlatMap, targetNodeId: string) => {
+  if (node.children === undefined) return;
+
+  const removableIndex = node.children.findIndex((childNode) => childNode.id === targetNodeId);
+  node.children.splice(removableIndex, 1);
+
+  delete flatMap[targetNodeId];
+}
+
+

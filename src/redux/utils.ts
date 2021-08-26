@@ -7,7 +7,7 @@ const initialData: IRenderTree = {
   id: "root",
   name: initialPath,
   type: 'dir',
-  parentNode: null,
+  parentNodeId: null,
 };
 
 export const reducerUtils = {
