@@ -16,6 +16,8 @@ export const reducerUtils = {
       tree: initialData,
       currentNodeId: 'root',
       flatMap: changeTreeIntoFlatMap(initialData),
+      nodeHistory: [],
+      historyIndex: 0,
       loading: false,
       error: null,
     }
@@ -31,6 +33,8 @@ export const reducerUtils = {
     return {
       tree: initialData,
       currentNodeId: 'root',
+      nodeHistory: [],
+      historyIndex: 0,
       flatMap: changeTreeIntoFlatMap(initialData),
       loading: false,
       error,

@@ -6,9 +6,10 @@ interface INodeProps {
     node: IRenderTree;
     updateChildren: Function;
     changeCurrentNodeId: Function;
+    updateNodeHistory: Function;
   }
   
-  export default function PathItem ({node, updateChildren, changeCurrentNodeId}: INodeProps) {
+  export default function PathItem ({node, updateChildren, changeCurrentNodeId, updateNodeHistory}: INodeProps) {
     const {id, name, children} = node
   
     if (!isDirectory(node)) return null;
@@ -18,7 +19,8 @@ interface INodeProps {
         updateChildren(node);
       }
   
-      changeCurrentNodeId(id);    
+      changeCurrentNodeId(id);  
+      updateNodeHistory(id);
     }
   
     return (

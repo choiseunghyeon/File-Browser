@@ -23,17 +23,19 @@ const useStyles = makeStyles({
 interface IMainTreeProps {
   tree: IRenderTree;
   updateChildren: Function;
+  updateNodeHistory: Function;
   currentNodeId: string;
   changeCurrentNodeId: Function;
 }
 
-export default function MainTree({tree, updateChildren, changeCurrentNodeId, currentNodeId}: IMainTreeProps) {
+export default function MainTree({tree, updateChildren, changeCurrentNodeId, currentNodeId, updateNodeHistory}: IMainTreeProps) {
   const classes = useStyles();
   useEffect(() => {
     async function getDirectory () {
       // 초기 store 설정 시 api 요청해서 기본 값으로 가지고 있도록 옮기기
       updateChildren(tree);
       changeCurrentNodeId(tree.id);
+      updateNodeHistory(tree.id);
     }
     getDirectory();
   }, []) // only mounted

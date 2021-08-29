@@ -7,9 +7,10 @@ interface IMainBodyContainerProps {
     currentNode: IRenderTree;
     updateChildren: Function;
     changeCurrentNodeId: Function;
+    updateNodeHistory: Function;
 }
 
-export const MainBodyContainer = function({ currentNode, updateChildren, changeCurrentNodeId }: IMainBodyContainerProps){
+export const MainBodyContainer = function({ currentNode, updateChildren, changeCurrentNodeId, updateNodeHistory }: IMainBodyContainerProps){
     const [selectedNodeId, setSelectedNodeId] = useState('');
     
     const changeSelectedNodeId = useCallback((event) => {
@@ -22,12 +23,13 @@ export const MainBodyContainer = function({ currentNode, updateChildren, changeC
 
         updateChildren(selectedNode);
         changeCurrentNodeId(selectedNode.id);
+        updateNodeHistory(selectedNode.id);
     }        
         
     if (!currentNode.children) return null;
     return (
         <div className="body">
-            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} updateChildren={updateChildren} handleDblClick={handleDblClick} changeCurrentNodeId={changeCurrentNodeId}/>)}
+            {currentNode.children.map(node => <Item key={node.id} node={node} selectedNodeId={selectedNodeId} changeSelectedNodeId={changeSelectedNodeId} updateChildren={updateChildren} handleDblClick={handleDblClick} changeCurrentNodeId={changeCurrentNodeId} updateNodeHistory={updateNodeHistory}/>)}
         </div>
     ) 
 }

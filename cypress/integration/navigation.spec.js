@@ -10,6 +10,7 @@ import {
   BASE_URL,
   layerPathSelect,
   previousPathSelector,
+  nextPathSelector,
 } from "../../src/tests/constValue";
 import { validateNextPath, validateRootPath } from "../utils";
 
@@ -75,7 +76,7 @@ describe("move next path", () => {
 });
 
 describe("move next path or previous path", () => {
-  it("move previous path", () => {
+  it("move previous path and next path", () => {
     cy.get(itemSelector).contains("Data").dblclick();
 
     cy.wait("@getNextPath");
@@ -85,5 +86,9 @@ describe("move next path or previous path", () => {
     cy.get(previousPathSelector).click();
 
     validateRootPath();
+
+    cy.get(nextPathSelector).click();
+
+    validateNextPath();
   });
 });

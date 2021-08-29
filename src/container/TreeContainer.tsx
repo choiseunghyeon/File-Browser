@@ -1,21 +1,19 @@
+import { shallowEqual, useSelector } from 'react-redux';
 import MainTree from '../components/MainTree'
-import { IRenderTree } from '../types/common'
+import { useDefaultTreeDispatch } from '../lib/useTree';
+import { RootState } from '../redux/modules/rootReducer';
 
-interface ITreeContainerProps {
-    tree: IRenderTree;
-    updateChildren: Function;
-    currentNodeId: string;
-    changeCurrentNodeId: Function;
-}
 
-export const TreeContainer = function(props: ITreeContainerProps){
+export const TreeContainer = function(){
+    const {tree, currentNodeId} = useSelector( (state: RootState) => ({
+        tree: state.treeState.tree,
+        currentNodeId: state.treeState.currentNodeId,
+    }), shallowEqual);
+    const { changeCurrentNodeId, updateNodeHistory, updateChildren} = useDefaultTreeDispatch();
 
     return (
         <div className="tree-container" onClick={()=>console.log("bubble!")}>
-            <MainTree {...props} />
-              {/* <ul className="tree-children level1">
-                {list.map(item => <li key={item.name} id={item.name} onClick={handleChangePath}>{item.name}</li>)}
-              </ul> */}
+            <MainTree tree={tree} updateChildren={updateChildren} currentNodeId={currentNodeId} changeCurrentNodeId={changeCurrentNodeId} updateNodeHistory={updateNodeHistory} />
         </div>
     ) 
 }

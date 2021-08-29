@@ -113,3 +113,22 @@ export const deleteChildNode = (node: IRenderTree, flatMap: IFlatMap, targetNode
 }
 
 
+export const updateHistory = (history, currentIndex, nodeId) => {
+  const lastIndex = history.length -1;
+  if (lastIndex !== currentIndex) {
+    const nextIndex = currentIndex + 1;
+    history.splice(nextIndex);
+  }
+
+  history.push(nodeId);
+} 
+
+
+export const validateIndex = (arr, index) => {
+  if (arr.length === 0) return false;
+  
+  const firstIndex = 0;
+  const lastIndex = arr.length - 1;
+  return index >= firstIndex && index <= lastIndex;
+} 
+

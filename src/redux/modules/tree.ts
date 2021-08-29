@@ -3,13 +3,15 @@ import {takeEvery, put, call, select} from 'redux-saga/effects';
 import { getFlatMap, reducerUtils } from '../utils';
 import { IFlatMap, IRenderTree } from '../../types/common';
 import produce from 'immer';
-import { createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap } from '../../lib/treeUtils';
+import { createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap, updateHistory, validateIndex } from '../../lib/treeUtils';
 import { deleteFile, deleteFolder, getAllList } from '../../api/fileBrowser';
 
 export interface TreeState {
   tree: IRenderTree;
   currentNodeId: string;
   flatMap: IFlatMap;
+  nodeHistory: string[];
+  historyIndex: number;
   loading: boolean;
   error: Error | null;
 }
@@ -20,12 +22,14 @@ const options = {
   prefix: 'tree',
 }
 
-export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange} = createActions(
+export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange} = createActions(
   {
     TREE_UPDATE: (tree: any) => tree,
     TREE_DELETE: (tree: any) => tree,
     TREE_FAIL: (error: Error) => error,
     CURRENT_NODE_ID_CHANGE: (id: string) => id,
+    NODE_HISTORY_UPDATE: (id: string) => id,
+    HISTORY_INDEX_CHANGE: (index: number) => index,
   },
 'TREE_PENDING',
 
@@ -69,10 +73,31 @@ const reducer = handleActions<TreeState, any>(
     },
     TREE_PENDING: (state) => reducerUtils.pending(state),
     TREE_FAIL: (state, {payload: error}) => reducerUtils.error(error),
-    CURRENT_NODE_ID_CHANGE: (state, {payload: id}) => ({
-      ...state,
-      currentNodeId: id,
-    }),
+    CURRENT_NODE_ID_CHANGE: (state, {payload: id}) => {
+      
+      return {
+        ...state,
+        currentNodeId: id,
+      };
+    },
+    NODE_HISTORY_UPDATE: (state, {payload: id}) => {
+      return produce(state, draft => {
+        updateHistory(draft.nodeHistory, draft.historyIndex, id);
+        draft.historyIndex = draft.nodeHistory.length - 1;
+      })
+    },
+    HISTORY_INDEX_CHANGE: (state, {payload: index}) => {
+      if (validateIndex(state.nodeHistory, index)) {
+        return {
+          ...state,
+          historyIndex: index,
+        }
+      } else {
+        return {
+          ...state,
+        }
+      }
+    },
   },
   initialState,
   options,
@@ -115,14 +140,14 @@ function* deleteNodeSaga(params) {
   }
 }
 
-export const {getAllFiles, deleteNode} = createActions(
+export const {getAllFiles, nodeDelete} = createActions(
   { 
     GET_ALL_FILES: (tree: IRenderTree) => tree,
-    DELETE_NODE: (tree: IRenderTree) => tree,
+    NODE_DELETE: (tree: IRenderTree) => tree,
   },
   options,
 )
 export function* sagas() {
   yield takeEvery(`${options.prefix}/GET_ALL_FILES`, getAllFileSaga);
-  yield takeEvery(`${options.prefix}/DELETE_NODE`, deleteNodeSaga);
+  yield takeEvery(`${options.prefix}/NODE_DELETE`, deleteNodeSaga);
 }

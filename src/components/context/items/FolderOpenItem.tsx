@@ -6,12 +6,14 @@ interface Props {
     node: IRenderTree;
     updateChildren: Function;
     changeCurrentNodeId: Function;
+    updateNodeHistory: Function;
 }
 
-export default function FolderOpenItem({node, updateChildren, changeCurrentNodeId}: Props) {
+export default function FolderOpenItem({node, updateChildren, changeCurrentNodeId, updateNodeHistory}: Props) {
     const handleClick = async () => {
         updateChildren(node);
         changeCurrentNodeId(node.id);
+        updateNodeHistory(node.id);
     }
     return (
         <Item data-testid={layerPathValue} onClick={handleClick}>

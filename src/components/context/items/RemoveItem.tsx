@@ -1,17 +1,15 @@
 import { Item } from 'react-contexify';
-import { useDispatch } from 'react-redux';
-import { deleteNode } from '../../../redux/modules/tree';
 import { layerPathValue } from '../../../tests/constValue';
 import { IRenderTree } from '../../../types/common';
 
 interface Props {
     node: IRenderTree;
+    deleteNode: Function;
 }
 
-export default function RemoveItem({node}: Props) {
-    const dispatch = useDispatch();
+export default function RemoveItem({node, deleteNode}: Props) {
     const handleClick = async () => {
-        dispatch(deleteNode(node))
+        deleteNode(node);
     }
     return (
         <Item data-testid={layerPathValue} onClick={handleClick}>
