@@ -68,4 +68,13 @@ describe("layer", () => {
 
     validateNextPath();
   });
+
+  // it("rename file or folder from layer", () => {});
+
+  // it("paste file or folder", () => {
+  //   cy.get(itemSelector).contains("Data").rightclick();
+
+  //   cy.get(layerPathSelect).contains("복사").click();
+
+  // })
 });

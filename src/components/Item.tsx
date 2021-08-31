@@ -20,6 +20,7 @@ export default function Item({node, selectedNodeId, changeSelectedNodeId, handle
     });
     const displayLayer = useCallback((e) => {
         // ref: 개선 layer에 넘겨주기 위해 props drilling이 심함 개선하기
+        e.stopPropagation();
         changeSelectedNodeId(e);
         show(e, {
             props: {

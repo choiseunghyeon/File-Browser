@@ -76,7 +76,12 @@ describe("move next path", () => {
 });
 
 describe("move next path or previous path", () => {
-  it("move previous path and next path", () => {
+  it("move previous path", () => {
+    // 이동할 경로가 없으므로 현재 경로 유지
+    cy.get(previousPathSelector).click();
+
+    validateRootPath();
+
     cy.get(itemSelector).contains("Data").dblclick();
 
     cy.wait("@getNextPath");
@@ -86,9 +91,23 @@ describe("move next path or previous path", () => {
     cy.get(previousPathSelector).click();
 
     validateRootPath();
-
+  });
+  it("move next path", () => {
+    // 이동 기록 없으므로 현재 경로 유지
     cy.get(nextPathSelector).click();
+    validateRootPath();
 
+    // main item을 통해 다음 경로 이동
+    cy.get(itemSelector).contains("Data").dblclick();
+    cy.wait("@getNextPath");
+    validateNextPath();
+
+    // 이전 경로 이동
+    cy.get(previousPathSelector).click();
+    validateRootPath();
+
+    // 다음 경로 이동
+    cy.get(nextPathSelector).click();
     validateNextPath();
   });
 });

@@ -1,7 +1,7 @@
 import { createActions, handleActions} from 'redux-actions';
 import {takeEvery, put, call, select} from 'redux-saga/effects';
 import { getFlatMap, reducerUtils } from '../utils';
-import { IFlatMap, IRenderTree } from '../../types/common';
+import { ICopyInfo, IFlatMap, IRenderTree } from '../../types/common';
 import produce from 'immer';
 import { createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap, updateHistory, validateIndex } from '../../lib/treeUtils';
 import { deleteFile, deleteFolder, getAllList } from '../../api/fileBrowser';
@@ -12,6 +12,7 @@ export interface TreeState {
   flatMap: IFlatMap;
   nodeHistory: string[];
   historyIndex: number;
+  copyInfo: ICopyInfo | null;
   loading: boolean;
   error: Error | null;
 }
@@ -22,7 +23,7 @@ const options = {
   prefix: 'tree',
 }
 
-export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange} = createActions(
+export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange, copyInfoUpdate} = createActions(
   {
     TREE_UPDATE: (tree: any) => tree,
     TREE_DELETE: (tree: any) => tree,
@@ -30,6 +31,7 @@ export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChang
     CURRENT_NODE_ID_CHANGE: (id: string) => id,
     NODE_HISTORY_UPDATE: (id: string) => id,
     HISTORY_INDEX_CHANGE: (index: number) => index,
+    COPY_INFO_UPDATE: (copyInfo: any) => copyInfo,
   },
 'TREE_PENDING',
 
@@ -98,6 +100,12 @@ const reducer = handleActions<TreeState, any>(
         }
       }
     },
+    COPY_INFO_UPDATE: (state, {payload: copyInfo}) => {
+      return {
+        ...state,
+        copyInfo,
+      }
+    }
   },
   initialState,
   options,
