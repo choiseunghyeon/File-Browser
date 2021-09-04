@@ -132,3 +132,11 @@ export const validateIndex = (arr, index) => {
   return index >= firstIndex && index <= lastIndex;
 } 
 
+export const createCopyInfo = (flatMap: IFlatMap, nodeId: string) => {
+  const node = flatMap[nodeId];
+  return {
+    type: isDirectory(node),
+    path: getAbsolutePathIn(flatMap, nodeId),
+    name: node.name,
+  }
+}

@@ -32,3 +32,8 @@ export const getAllList = path => {
   const URL = `${BASE_URL}/all?path=${path}`;
   return http.get(URL, {});
 };
+
+export const pasteNode = req => {
+  const URL = `${BASE_URL}/paste`;
+  return http.post(URL, req, HEADERS);
+};

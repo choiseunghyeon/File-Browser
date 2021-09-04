@@ -18,7 +18,7 @@ export const reducerUtils = {
       flatMap: changeTreeIntoFlatMap(initialData),
       nodeHistory: [],
       historyIndex: 0,
-      copyInfo: null,
+      copyNode: null,
       loading: false,
       error: null,
     }
@@ -36,7 +36,7 @@ export const reducerUtils = {
       currentNodeId: 'root',
       nodeHistory: [],
       historyIndex: 0,
-      copyInfo: null,
+      copyNode: null,
       flatMap: changeTreeIntoFlatMap(initialData),
       loading: false,
       error,
@@ -45,3 +45,4 @@ export const reducerUtils = {
 }
 
 export const getFlatMap = state => state.treeState.flatMap;
+export const getCopyNode = state => state.treeState.copyNode;

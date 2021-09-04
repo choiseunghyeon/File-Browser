@@ -3,7 +3,7 @@ const fs = require("fs");
 const fsExtra = require("fs-extra");
 const cors = require("cors");
 
-const { createFile, createDirectory } = require("./utils");
+const { makeDestinationPath, getAllFile } = require("./utils");
 var app = express();
 
 app.use(cors());
@@ -35,13 +35,9 @@ app.get("/dir", function (req, res) {
 app.get("/all", function (req, res) {
   const path = req.query.path;
 
-  const list = fs.readdirSync(path, { withFileTypes: true });
-  const dirList = list.reduce((arr, filePath) => {
-    filePath.isDirectory() ? arr.push(createDirectory(filePath.name)) : arr.push(createFile(filePath.name));
-    return arr;
-  }, []);
+  const result = getAllFile(path);
 
-  res.json(dirList);
+  res.json(result);
 });
 
 app.delete("/file", function (req, res) {
@@ -70,21 +66,18 @@ app.delete("/folder", function (req, res) {
   res.json("성공적으로 삭제되었습니다.");
 });
 
-app.post("/copy", function (req, res) {
-  const path = req.body.path;
-  let subfixCopyName = " - 복사본";
-  let subfixCopyNameNumber = 1;
+app.post("/paste", function (req, res) {
+  const { type, path, name, destPath } = req.body;
 
-  while (fs.existsSync(path + subfixCopyName + subfixCopyNameNumber)) {
-    subfixCopyNameNumber++;
-  }
-
-  fsExtra.copy(path, path + subfixCopyName + subfixCopyNameNumber, function (err) {
+  const finalPath = makeDestinationPath(destPath, name);
+  console.log(finalPath);
+  fsExtra.copy(path, finalPath, function (err) {
     if (err) {
       res.json("복사 과정에 문제가 있었습니다.");
     }
 
-    res.json("성공적으로 복사되었습니다.");
+    const allFileList = getAllFile(destPath);
+    res.json(allFileList);
   });
 });
 

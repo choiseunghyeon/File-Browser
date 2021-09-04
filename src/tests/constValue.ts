@@ -11,6 +11,7 @@ export const treeValue = 'treeItem';
 export const layerPathValue = 'layerPath';
 export const nextPathValue = 'nextPath';
 export const previousPathValue = 'previousPath';
+export const emptySpaceValue = 'emptySpace';
 
 export const itemSelector = createTestSelector(dataSetNameForTest, itemValue);
 export const pathSelector = createTestSelector(dataSetNameForTest, pathValue);
@@ -19,6 +20,7 @@ export const treeItemSelector = createTestSelector(dataSetNameForTest, treeValue
 export const layerPathSelect = createTestSelector(dataSetNameForTest, layerPathValue);
 export const nextPathSelector = createTestSelector(dataSetNameForTest, nextPathValue);
 export const previousPathSelector = createTestSelector(dataSetNameForTest, previousPathValue);
+export const emptySpaceSelector = createTestSelector(dataSetNameForTest, emptySpaceValue);
 
 export const initialPath = "C:/";
 export const nextPath = "C:/Data";
@@ -36,3 +38,12 @@ export const nextState = [
     { type: "dir", name: "nextFolder" },
     { type: "file", name: "nextFile" },
 ];
+
+
+export const rootStateAfterDataPaste = [
+    { type: "dir", name: "Data" },
+    { type: "dir", name: "Image" },
+    { type: "dir", name: "Setup" },
+    { type: "file", name: "testFile" },
+    { type: "dir", name: "Data - 복사본 1" },
+]

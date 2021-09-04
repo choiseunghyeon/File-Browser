@@ -1,10 +1,10 @@
 import { createActions, handleActions} from 'redux-actions';
 import {takeEvery, put, call, select} from 'redux-saga/effects';
-import { getFlatMap, reducerUtils } from '../utils';
-import { ICopyInfo, IFlatMap, IRenderTree } from '../../types/common';
+import { getCopyNode, getFlatMap, reducerUtils } from '../utils';
+import { IFlatMap, IRenderTree } from '../../types/common';
 import produce from 'immer';
-import { createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap, updateHistory, validateIndex } from '../../lib/treeUtils';
-import { deleteFile, deleteFolder, getAllList } from '../../api/fileBrowser';
+import { createCopyInfo, createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap, updateHistory, validateIndex } from '../../lib/treeUtils';
+import { deleteFile, deleteFolder, getAllList, pasteNode } from '../../api/fileBrowser';
 
 export interface TreeState {
   tree: IRenderTree;
@@ -12,7 +12,7 @@ export interface TreeState {
   flatMap: IFlatMap;
   nodeHistory: string[];
   historyIndex: number;
-  copyInfo: ICopyInfo | null;
+  copyNode: IRenderTree | null;
   loading: boolean;
   error: Error | null;
 }
@@ -23,7 +23,7 @@ const options = {
   prefix: 'tree',
 }
 
-export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange, copyInfoUpdate} = createActions(
+export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange, nodeCopy} = createActions(
   {
     TREE_UPDATE: (tree: any) => tree,
     TREE_DELETE: (tree: any) => tree,
@@ -31,7 +31,7 @@ export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChang
     CURRENT_NODE_ID_CHANGE: (id: string) => id,
     NODE_HISTORY_UPDATE: (id: string) => id,
     HISTORY_INDEX_CHANGE: (index: number) => index,
-    COPY_INFO_UPDATE: (copyInfo: any) => copyInfo,
+    NODE_COPY: (node: IRenderTree) => node,
   },
 'TREE_PENDING',
 
@@ -100,12 +100,12 @@ const reducer = handleActions<TreeState, any>(
         }
       }
     },
-    COPY_INFO_UPDATE: (state, {payload: copyInfo}) => {
+    NODE_COPY: (state, {payload: node}) => {
       return {
         ...state,
-        copyInfo,
+        copyNode: node,
       }
-    }
+    },
   },
   initialState,
   options,
@@ -148,14 +148,44 @@ function* deleteNodeSaga(params) {
   }
 }
 
-export const {getAllFiles, nodeDelete} = createActions(
+function* pasteNodeSaga(params) {
+  let { payload: destNode } = params;
+  const copyNode = yield select(getCopyNode);
+  const flatMap = yield select(getFlatMap);
+
+
+  try {
+    yield put(treePending());
+
+    let req = {
+      type: isDirectory(copyNode) ? 'dir' : 'file',
+      path: getAbsolutePathIn(flatMap, copyNode.id),
+      name: copyNode.name,
+      destPath: getAbsolutePathIn(flatMap, destNode.id),
+    };
+    const updatedAllFile = yield call(pasteNode, req);
+
+    let payload = {
+      allFile: updatedAllFile,
+      tree: destNode,
+    }
+    yield put(treeUpdate(payload));
+  } catch (error) {
+    console.log(error);
+    yield put(treeFail(error));
+  }
+}
+
+export const {getAllFiles, nodeDelete, nodePaste} = createActions(
   { 
     GET_ALL_FILES: (tree: IRenderTree) => tree,
     NODE_DELETE: (tree: IRenderTree) => tree,
+    NODE_PASTE: (destPath: string) => destPath,
   },
   options,
 )
 export function* sagas() {
   yield takeEvery(`${options.prefix}/GET_ALL_FILES`, getAllFileSaga);
   yield takeEvery(`${options.prefix}/NODE_DELETE`, deleteNodeSaga);
+  yield takeEvery(`${options.prefix}/NODE_PASTE`, pasteNodeSaga);
 }

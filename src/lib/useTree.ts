@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { currentNodeIdChange, getAllFiles, nodeHistoryUpdate } from "../redux/modules/tree";
+import { currentNodeIdChange, getAllFiles, nodeCopy, nodeDelete, nodeHistoryUpdate, nodePaste } from "../redux/modules/tree";
 import { IRenderTree } from "../types/common";
 
 export function useDefaultTreeDispatch()  {
@@ -18,4 +18,34 @@ export function useDefaultTreeDispatch()  {
         updateChildren,
     }
     
+}
+
+export function useNodeDeleteDispatch (deps = []) {
+    const dispatch = useDispatch()
+
+    const deleteNode = useCallback((node: IRenderTree) => {
+        dispatch(nodeDelete(node));
+      }, deps);
+    
+    return deleteNode;
+}
+
+export function useNodeCopyDispatch (deps = []) {
+    const dispatch = useDispatch();
+
+    const copyNode = useCallback((node: IRenderTree) => {
+        dispatch(nodeCopy(node));
+    }, deps);
+
+    return copyNode;
+}
+
+export function useNodePasteDispatch (deps = []) {
+    const dispatch = useDispatch();
+
+    const pasteNode = useCallback((destNode: IRenderTree) => {
+        dispatch(nodePaste(destNode));
+    }, deps);
+
+    return pasteNode;
 }

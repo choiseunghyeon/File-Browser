@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react';
 import { Item } from 'react-contexify';
 import { useDispatch } from 'react-redux';
+import { useNodeCopyDispatch, useNodeDeleteDispatch } from '../../lib/useTree';
 import { nodeDelete } from '../../redux/modules/tree';
 import { IRenderTree } from '../../types/common';
+import CopyItem from './items/CopyItem';
 import RemoveItem from './items/RemoveItem';
 
 
@@ -11,16 +13,15 @@ interface ITooltipProps {
 } 
 
 export default function FileLayer({node}: ITooltipProps) { 
-  const dispatch = useDispatch();
-  const deleteNode = useCallback((node) => {
-    dispatch(nodeDelete(node));
-  }, []);
+  const deleteNode = useNodeDeleteDispatch();
+  const copyNode = useNodeCopyDispatch();
   return (
     <>
       <Item>
           열기
       </Item>
       <RemoveItem node={node} deleteNode={deleteNode}/> 
+      <CopyItem node={node} copyNode={copyNode} />
     </>
   )
 }

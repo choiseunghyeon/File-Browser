@@ -1,20 +1,19 @@
-import { IRenderTree } from '../../types/common';
-import { hasDirectory } from '../../lib/treeUtils';
-import PathItem from './items/PathItem';
-import { useDefaultTreeDispatch } from '../../lib/useTree';
 import { useSelector } from 'react-redux';
+import { useNodePasteDispatch } from '../../lib/useTree';
 import { RootState } from '../../redux/modules/rootReducer';
-import { shallowCopy } from 'immer/dist/internal';
+import { IRenderTree } from '../../types/common';
+import PasteItem from './items/PasteItem';
 
+interface ITooltipProps {
+  node: IRenderTree;
+} 
 
-export default function MainContainerLayer() {      
-    const { copyInfo } = useSelector( (state: RootState) => ({
-        copyInfo: state.treeState.copyInfo,
-    }), shallowCopy)
+export default function MainContainerLayer({node}: ITooltipProps) {      
+    const pasteNode = useNodePasteDispatch();
 
     return (
       <>
-
+        <PasteItem node={node} pasteNode={pasteNode} />
       </>
     )
 }
