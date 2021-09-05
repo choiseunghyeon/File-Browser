@@ -1,4 +1,4 @@
-import { IFlatMap, IRenderTree } from "../types/common";
+import { IFlatMap, IPasteReq, IRenderTree } from "../types/common";
 
 let uid = 1;
 export const createTreeData = (parentNode, file) => ({
@@ -8,6 +8,20 @@ export const createTreeData = (parentNode, file) => ({
   parentNodeId: parentNode.id,
   // children: [],
 });
+
+export const createPasteReq = (flatMap: IFlatMap, node: IRenderTree, destNode: IRenderTree): IPasteReq => {
+  return {
+    type: isDirectory(node) ? 'dir' : 'file',
+    path: getAbsolutePathIn(flatMap, node.id),
+    name: node.name,
+    destPath: getAbsolutePathIn(flatMap, destNode.id),
+  };
+};
+
+export const createFileDataWithNode = (node) => ({
+  name: node.name,
+  type: node.type,
+})
 
 export const getAbsolutePathIn = (flatMap, id) => {
   let result: string[] = [];
@@ -21,14 +35,6 @@ export const getAbsolutePathIn = (flatMap, id) => {
 };
 
 export const getCurrentPath = (map, nodeId) => {
-  // let result = [];
-
-  // do {
-  //   result.push({ ...node });
-  //   node = node.parentNode;
-  // } while (node);
-
-  // return result.reverse();
   let result: IRenderTree[] = [];
 
   let node: IRenderTree = map[nodeId];
@@ -131,12 +137,3 @@ export const validateIndex = (arr, index) => {
   const lastIndex = arr.length - 1;
   return index >= firstIndex && index <= lastIndex;
 } 
-
-export const createCopyInfo = (flatMap: IFlatMap, nodeId: string) => {
-  const node = flatMap[nodeId];
-  return {
-    type: isDirectory(node),
-    path: getAbsolutePathIn(flatMap, nodeId),
-    name: node.name,
-  }
-}

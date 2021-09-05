@@ -1,18 +1,16 @@
 import {
   itemSelector,
-  pathSelector,
-  pathArrowSelector,
-  treeItemSelector,
   initialPath,
   initialState,
   nextPath,
   nextState,
   BASE_URL,
-  layerPathSelect,
+  layerPathSelector,
   emptySpaceSelector,
-  rootStateAfterDataPaste,
+  rootStateAfterImagePaste,
+  nextStateAfterPaste,
 } from "../../src/tests/constValue";
-import { clickEmptySpace, clickEmptySpaceInMainContainer, rightClickEmptySpace, validateNextPath, validateRootPath, validateRootPathAfterPaste } from "../utils";
+import { validateNextPath, validateNextPathAfterPaste, validateRootPath, validateRootPathAfterPaste } from "../utils";
 
 /**
  * navigation, mainbody, tree에서 경로 이동에 대한 테스트
@@ -32,9 +30,6 @@ beforeEach(() => {
   }).as("getNextPath");
 
   cy.intercept("DELETE", `${BASE_URL}/folder`).as("deleteFolder");
-  cy.intercept("POST", `${BASE_URL}/paste`, {
-    body: rootStateAfterDataPaste,
-  }).as("paste");
 });
 
 describe("layer", () => {
@@ -45,21 +40,44 @@ describe("layer", () => {
     validateRootPath();
   });
 
-  it("render layer correctly", () => {
-    cy.get(itemSelector).contains("Data").rightclick();
+  describe("render", () => {
+    it("file layer", () => {
+      cy.get(itemSelector).contains("testFile").rightclick();
 
-    cy.get(layerPathSelect).within(items => {
-      expect(items).to.have.length(3);
-      expect(items[0]).to.have.contain("열기");
-      expect(items[1]).to.have.contain("삭제");
-      expect(items[2]).to.have.contain("복사");
+      cy.get(layerPathSelector).within(items => {
+        expect(items).to.have.length(3);
+        expect(items[0]).to.have.contain("열기");
+        expect(items[1]).to.have.contain("삭제");
+        expect(items[2]).to.have.contain("복사");
+      });
+    });
+
+    it("folder layer", () => {
+      cy.get(itemSelector).contains("Data").rightclick();
+
+      cy.get(layerPathSelector).within(items => {
+        expect(items).to.have.length(4);
+        expect(items[0]).to.have.contain("열기");
+        expect(items[1]).to.have.contain("삭제");
+        expect(items[2]).to.have.contain("복사");
+        expect(items[3]).to.have.contain("붙여넣기");
+      });
+    });
+
+    it("mainContainer layer", () => {
+      cy.get(emptySpaceSelector).rightclick();
+
+      cy.get(layerPathSelector).within(items => {
+        expect(items).to.have.length(1);
+        expect(items[0]).to.have.contain("붙여넣기");
+      });
     });
   });
 
   it("delete file from layer", () => {
     cy.get(itemSelector).contains("Data").rightclick();
 
-    cy.get(layerPathSelect).contains("삭제").click();
+    cy.get(layerPathSelector).contains("삭제").click();
 
     cy.wait("@deleteFolder");
 
@@ -79,7 +97,7 @@ describe("layer", () => {
   it("open folder from layer", () => {
     cy.get(itemSelector).contains("Data").rightclick();
 
-    cy.get(layerPathSelect).contains("열기").click();
+    cy.get(layerPathSelector).contains("열기").click();
 
     cy.wait("@getNextPath");
 
@@ -90,11 +108,15 @@ describe("layer", () => {
 
   describe("copy & paste", () => {
     it("paste Folder to empty space", () => {
-      cy.get(itemSelector).contains("Data").rightclick();
-      cy.get(layerPathSelect).contains("복사").click();
+      cy.intercept("POST", `${BASE_URL}/paste`, {
+        body: rootStateAfterImagePaste,
+      }).as("paste");
+
+      cy.get(itemSelector).contains("Image").rightclick();
+      cy.get(layerPathSelector).contains("복사").click();
 
       cy.get(emptySpaceSelector).rightclick();
-      cy.get(layerPathSelect).contains("붙여넣기").click();
+      cy.get(layerPathSelector).contains("붙여넣기").click();
 
       cy.wait("@paste");
 
@@ -102,16 +124,25 @@ describe("layer", () => {
     });
 
     it("paste Folder in Folder", () => {
-      cy.get(itemSelector).contains("Data").rightclick();
-      cy.get(layerPathSelect).contains("복사").click();
+      cy.intercept("POST", `${BASE_URL}/paste`, {
+        body: nextStateAfterPaste,
+      }).as("paste");
 
-      cy.get(itemSelector).contains("image").rightclick();
-      cy.get(layerPathSelect).contains("붙여넣기").click();
+      cy.intercept("GET", `${BASE_URL}/all?path=${nextPath}`, {
+        body: nextStateAfterPaste,
+      }).as("getNextPath");
+
+      cy.get(itemSelector).contains("Image").rightclick();
+      cy.get(layerPathSelector).contains("복사").click();
+
+      cy.get(itemSelector).contains("Data").rightclick();
+      cy.get(layerPathSelector).contains("붙여넣기").click();
 
       // 이 작업 마무리 하기
       cy.wait("@paste");
 
-      validateRootPathAfterPaste();
+      cy.get(itemSelector).contains("Data").dblclick();
+      validateNextPathAfterPaste();
     });
   });
 });

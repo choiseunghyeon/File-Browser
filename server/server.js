@@ -68,14 +68,16 @@ app.delete("/folder", function (req, res) {
 
 app.post("/paste", function (req, res) {
   const { type, path, name, destPath } = req.body;
-
+  console.log(req.body);
   const finalPath = makeDestinationPath(destPath, name);
-  console.log(finalPath);
+  // console.log(finalPath);
   fsExtra.copy(path, finalPath, function (err) {
+    console.log(err);
     if (err) {
       res.json("복사 과정에 문제가 있었습니다.");
     }
 
+    // res.json("정상적으로 복사되었습니다.");
     const allFileList = getAllFile(destPath);
     res.json(allFileList);
   });

@@ -49,14 +49,23 @@ export const validateRootPathAfterPaste = () => {
     expect(items[3]).to.have.contain("testFile");
 
     expect(items[4]).to.have.contain("폴더");
-    expect(items[4]).to.have.contain("Data - 복사본 1");
+    expect(items[4]).to.have.contain("Image - 복사본 1");
   });
 };
 
-export const clickEmptySpace = cyEl => {
-  cyEl.click(50, 50, { force: true });
-};
+export const validateNextPathAfterPaste = () => {
+  cy.get(itemSelector).within(items => {
+    expect(items).to.have.length(nextState.length + 1);
+    expect(items[0]).to.have.contain("폴더");
+    expect(items[0]).to.have.contain("history");
 
-export const rightClickEmptySpace = cyEl => {
-  cyEl.rightclick(50, 50, { force: true });
+    expect(items[1]).to.have.contain("폴더");
+    expect(items[1]).to.have.contain("nextFolder");
+
+    expect(items[2]).to.have.contain("파일");
+    expect(items[2]).to.have.contain("nextFile");
+
+    expect(items[3]).to.have.contain("폴더");
+    expect(items[3]).to.have.contain("Image");
+  });
 };

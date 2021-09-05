@@ -3,7 +3,7 @@ import {takeEvery, put, call, select} from 'redux-saga/effects';
 import { getCopyNode, getFlatMap, reducerUtils } from '../utils';
 import { IFlatMap, IRenderTree } from '../../types/common';
 import produce from 'immer';
-import { createCopyInfo, createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap, updateHistory, validateIndex } from '../../lib/treeUtils';
+import { createFileDataWithNode, createPasteReq, createTreeData, deleteChildNode, getAbsolutePathIn, getNodeInFlatMap, getNodeInTree, isDirectory, updateFlatMap, updateHistory, validateIndex } from '../../lib/treeUtils';
 import { deleteFile, deleteFolder, getAllList, pasteNode } from '../../api/fileBrowser';
 
 export interface TreeState {
@@ -23,7 +23,7 @@ const options = {
   prefix: 'tree',
 }
 
-export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange, nodeCopy} = createActions(
+export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChange, nodeHistoryUpdate, historyIndexChange, nodeCopy, nodePasteWith} = createActions(
   {
     TREE_UPDATE: (tree: any) => tree,
     TREE_DELETE: (tree: any) => tree,
@@ -32,6 +32,7 @@ export const { treeUpdate, treeDelete, treePending, treeFail, currentNodeIdChang
     NODE_HISTORY_UPDATE: (id: string) => id,
     HISTORY_INDEX_CHANGE: (index: number) => index,
     NODE_COPY: (node: IRenderTree) => node,
+    NODE_PASTE_WITH: (copyNode: IRenderTree, destNode: IRenderTree) => ({ copyNode, destNode }),
   },
 'TREE_PENDING',
 
@@ -106,6 +107,16 @@ const reducer = handleActions<TreeState, any>(
         copyNode: node,
       }
     },
+    NODE_PASTE_WITH: (state, { payload }) => {
+      const { copyNode, destNode} = payload;
+      return produce(state, draft => {
+        const targetNode = getNodeInTree(draft.tree, destNode.id);
+        const newNode = createTreeData(targetNode, createFileDataWithNode(copyNode));
+        targetNode.children.push(newNode);
+
+        updateFlatMap(draft.flatMap, [newNode]);
+      })
+    },
   },
   initialState,
   options,
@@ -153,16 +164,11 @@ function* pasteNodeSaga(params) {
   const copyNode = yield select(getCopyNode);
   const flatMap = yield select(getFlatMap);
 
-
   try {
     yield put(treePending());
 
-    let req = {
-      type: isDirectory(copyNode) ? 'dir' : 'file',
-      path: getAbsolutePathIn(flatMap, copyNode.id),
-      name: copyNode.name,
-      destPath: getAbsolutePathIn(flatMap, destNode.id),
-    };
+    let req = createPasteReq(flatMap, copyNode, destNode);
+
     const updatedAllFile = yield call(pasteNode, req);
 
     let payload = {
@@ -170,6 +176,7 @@ function* pasteNodeSaga(params) {
       tree: destNode,
     }
     yield put(treeUpdate(payload));
+    
   } catch (error) {
     console.log(error);
     yield put(treeFail(error));
@@ -180,7 +187,7 @@ export const {getAllFiles, nodeDelete, nodePaste} = createActions(
   { 
     GET_ALL_FILES: (tree: IRenderTree) => tree,
     NODE_DELETE: (tree: IRenderTree) => tree,
-    NODE_PASTE: (destPath: string) => destPath,
+    NODE_PASTE: (destNode: IRenderTree) => destNode,
   },
   options,
 )

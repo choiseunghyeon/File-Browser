@@ -16,10 +16,11 @@ export interface IFlatMap {
   [key: string]: IRenderTree;
 }
 
-export interface ICopyInfo {
+export interface IPasteReq {
   type: 'dir' | 'file';
   path: string;
   name: string;
+  destPath: string;
 }
 
 export interface ITreeReq {
