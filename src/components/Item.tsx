@@ -2,11 +2,12 @@ import { useCallback } from "react";
 import { useContextMenu } from "react-contexify";
 import { FILE_LAYER_ID, FOLDER_LAYER_ID, MENU_ID } from "../lib/contextUtils";
 import { isDirectory } from "../lib/treeUtils";
-import { IRenderTree } from "../types/common";
+import { IRenderTree, ITree } from "../types/common";
 import { itemValue } from '../tests/constValue';
-interface Props {
+export interface IItemProps{
     node: IRenderTree;
     selectedNodeId: string;
+    display?: boolean;
     changeSelectedNodeId: (event: any) => void;
     handleDblClick: (event: any) => void;
     updateChildren: Function;
@@ -14,7 +15,7 @@ interface Props {
     updateNodeHistory: Function;
 }
 
-export default function Item({node, selectedNodeId, changeSelectedNodeId, handleDblClick, updateChildren, changeCurrentNodeId, updateNodeHistory}: Props) {
+export default function Item({display = false, node, selectedNodeId, changeSelectedNodeId, handleDblClick, updateChildren, changeCurrentNodeId, updateNodeHistory}: IItemProps) {
     const { show } = useContextMenu({
         id: MENU_ID,
     });
@@ -29,6 +30,8 @@ export default function Item({node, selectedNodeId, changeSelectedNodeId, handle
             }
         })
     }, [node]);
+
+    if (display === false) return null;
 
     return (
         <div data-testid={itemValue} id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} onContextMenu={displayLayer} style={{
