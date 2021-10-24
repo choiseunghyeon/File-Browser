@@ -13,6 +13,7 @@
     "@types/node": "^12.20.15",
     "@types/react": "^17.0.13",
     "@types/react-dom": "^17.0.8",
+    "addon-redux": "^2.0.9",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -76,6 +77,8 @@
     "@storybook/node-logger": "^6.3.12",
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.3.12",
-    "cypress": "^8.2.0"
+    "cypress": "^8.2.0",
+    "msw": "^0.35.0",
+    "msw-storybook-addon": "^1.4.1"
   }
 }

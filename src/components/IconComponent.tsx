@@ -1,6 +1,6 @@
 import React from "react";
 
-interface IconComponentProps {
+export interface IconComponentProps {
     id: any,
     label: any,
     className: any

@@ -26,7 +26,6 @@ const FileNode: IRenderTree = {
 const stub: IItemProps = {
     node: FolderNode,
     selectedNodeId: '123',
-    display: true,
     changeSelectedNodeId: () => {},
     handleDblClick: () => {},
     updateChildren: () => {},

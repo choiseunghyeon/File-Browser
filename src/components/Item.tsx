@@ -7,7 +7,6 @@ import { itemValue } from '../tests/constValue';
 export interface IItemProps{
     node: IRenderTree;
     selectedNodeId: string;
-    display?: boolean;
     changeSelectedNodeId: (event: any) => void;
     handleDblClick: (event: any) => void;
     updateChildren: Function;
@@ -15,7 +14,7 @@ export interface IItemProps{
     updateNodeHistory: Function;
 }
 
-export default function Item({display = false, node, selectedNodeId, changeSelectedNodeId, handleDblClick, updateChildren, changeCurrentNodeId, updateNodeHistory}: IItemProps) {
+export default function Item({node, selectedNodeId, changeSelectedNodeId, handleDblClick, updateChildren, changeCurrentNodeId, updateNodeHistory}: IItemProps) {
     const { show } = useContextMenu({
         id: MENU_ID,
     });
@@ -30,8 +29,6 @@ export default function Item({display = false, node, selectedNodeId, changeSelec
             }
         })
     }, [node]);
-
-    if (display === false) return null;
 
     return (
         <div data-testid={itemValue} id={node.id} onClick={changeSelectedNodeId} onDoubleClick={handleDblClick} onContextMenu={displayLayer} style={{

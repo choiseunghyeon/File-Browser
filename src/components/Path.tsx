@@ -3,11 +3,11 @@ import { useCallback } from 'react';
 import { useContextMenu } from 'react-contexify';
 import { MENU_ID, PATH_LAYER_ID } from '../lib/contextUtils';
 import { hasDirectory } from '../lib/treeUtils';
-import { IPath } from '../types/common';
+import { IPath, IRenderTree } from '../types/common';
 import { pathValue, pathArrowValue } from '../tests/constValue';
 
-interface IPathProps {
-    path: IPath;
+export interface IPathProps {
+    path: IRenderTree;
     changeCurrentNodeId: Function;
     updateNodeHistory: Function;
 }
