@@ -141,6 +141,7 @@ function* getAllFileSaga(params) {
   try {
     yield put(treePending());
     const allFile = yield call(getAllList, getAbsolutePathIn(flatMap, tree.id));
+    console.log(allFile);
     let payload = {
       allFile,
       tree,

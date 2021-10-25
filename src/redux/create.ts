@@ -13,6 +13,7 @@ const create = () => {
 
   sagaMiddleware.run(rootSaga);
 
+  console.log(store);
   return store;
 };
 

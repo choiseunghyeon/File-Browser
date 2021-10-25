@@ -8,9 +8,10 @@ import {
   nextPath,
   nextState,
   BASE_URL,
-  layerPathSelect,
+  layerPathSelector,
   previousPathSelector,
   nextPathSelector,
+  APP_STORY_URL,
 } from "../../src/tests/constValue";
 import { validateNextPath, validateRootPath } from "../utils";
 
@@ -31,7 +32,7 @@ beforeEach(() => {
     body: nextState,
   }).as("getNextPath");
 
-  cy.visit("/");
+  cy.visit(APP_STORY_URL);
   cy.wait("@getRootPath");
 
   validateRootPath();
@@ -59,7 +60,7 @@ describe("move next path", () => {
   it("when navigation layer click then move selected path", () => {
     cy.get(pathArrowSelector).click();
 
-    cy.get(layerPathSelect).contains("Data").click();
+    cy.get(layerPathSelector).contains("Data").click();
 
     cy.wait("@getNextPath");
 

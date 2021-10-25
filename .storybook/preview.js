@@ -1,6 +1,6 @@
 import "../src/resources/app.global.css";
 
-const store = createForStorybook();
+// const store = createForStorybook();
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {

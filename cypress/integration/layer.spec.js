@@ -9,6 +9,7 @@ import {
   emptySpaceSelector,
   rootStateAfterImagePaste,
   nextStateAfterPaste,
+  APP_STORY_URL,
 } from "../../src/tests/constValue";
 import { validateNextPath, validateNextPathAfterPaste, validateRootPath, validateRootPathAfterPaste } from "../utils";
 
@@ -34,7 +35,7 @@ beforeEach(() => {
 
 describe("layer", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit(APP_STORY_URL);
     cy.wait("@getRootPath");
 
     validateRootPath();

@@ -8,7 +8,7 @@ import { BASE_URL, initialPath, initialState } from './tests/constValue';
 import { reducerUtils } from './redux/utils';
 import { TreeState } from './redux/modules/tree';
 
-const store = createForStorybook();
+const store = create();
 // const store = {
 //     getState: (): TreeState => {
 //       return reducerUtils.init();
@@ -26,12 +26,12 @@ const Template: ComponentStory<typeof App> = () => <App />
 
 export const Default = Template.bind({});
 Default.storyName = "App";
-Default.parameters = {
-    msw: [
-        rest.get(`${BASE_URL}/all?path=${initialPath}`, (req, res, ctx) => {
-            return res(
-                ctx.json(initialState)
-            )
-        })
-    ]
-}
+// Default.parameters = {
+//     msw: [
+//         rest.get(`${BASE_URL}/all?path=${initialPath}`, (req, res, ctx) => {
+//             return res(
+//                 ctx.json(initialState)
+//             )
+//         })
+//     ]
+// }

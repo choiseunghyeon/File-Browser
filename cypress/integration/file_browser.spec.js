@@ -1,4 +1,16 @@
-import { itemSelector, pathSelector, pathArrowSelector, treeItemSelector, initialPath, initialState, nextPath, nextState, BASE_URL, layerPathSelect } from "../../src/tests/constValue";
+import {
+  itemSelector,
+  pathSelector,
+  pathArrowSelector,
+  treeItemSelector,
+  initialPath,
+  initialState,
+  nextPath,
+  nextState,
+  BASE_URL,
+  layerPathSelector,
+  APP_STORY_URL,
+} from "../../src/tests/constValue";
 import { validateRootPath } from "../utils";
 
 beforeEach(() => {
@@ -17,7 +29,7 @@ beforeEach(() => {
 
 describe("render file-browser", () => {
   it("render correctly", () => {
-    cy.visit("/");
+    cy.visit(APP_STORY_URL);
 
     // main
     validateRootPath();
@@ -41,7 +53,7 @@ describe("render file-browser", () => {
     cy.get(pathSelector).contains(initialPath);
     cy.get(pathArrowSelector).click();
 
-    cy.get(layerPathSelect).within(items => {
+    cy.get(layerPathSelector).within(items => {
       expect(items).to.have.length(3);
       expect(items[0]).to.have.contain("Data");
       expect(items[1]).to.have.contain("Image");
